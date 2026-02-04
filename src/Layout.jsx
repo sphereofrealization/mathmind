@@ -19,7 +19,8 @@ import {
     Cpu, // NEW: Cpu icon for FT Backend
     Settings, // NEW: for Site Management
     Link2, // NEW: for On-Chain Bridge
-    Search // NEW: search icon for Asset Finder
+    Search // NEW: search icon for Asset Finder,
+    Bot // NEW: Agents
 } from "lucide-react";
 import {
   Sidebar,
@@ -78,6 +79,11 @@ const navigationItems = [
     url: createPageUrl("ModelStudio"),
     icon: Palette,
   },
+  {
+    title: "Agents",
+    url: createPageUrl("Agents"),
+    icon: Bot,
+  }
   // NEW: FT Backend
   {
     title: "FT Backend",

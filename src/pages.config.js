@@ -47,50 +47,52 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Dashboard from './pages/Dashboard';
-import Upload from './pages/Upload';
-import Library from './pages/Library';
-import ContentViewer from './pages/ContentViewer';
-import Export from './pages/Export';
 import AIChat from './pages/AIChat';
-import TrainAI from './pages/TrainAI';
-import TrainingMonitor from './pages/TrainingMonitor';
-import MyAssets from './pages/MyAssets';
-import Marketplace from './pages/Marketplace';
+import AssetFinder from './pages/AssetFinder';
+import BuyTokens from './pages/BuyTokens';
+import ContentViewer from './pages/ContentViewer';
+import Dashboard from './pages/Dashboard';
+import DocToJSONL from './pages/DocToJSONL';
 import Earnings from './pages/Earnings';
+import Export from './pages/Export';
+import FineTuningBackend from './pages/FineTuningBackend';
+import FruitlesBridge from './pages/FruitlesBridge';
 import GrowthAgent from './pages/GrowthAgent';
 import Invite from './pages/Invite';
+import Library from './pages/Library';
+import Marketplace from './pages/Marketplace';
 import ModelStudio from './pages/ModelStudio';
-import FineTuningBackend from './pages/FineTuningBackend';
+import MyAssets from './pages/MyAssets';
 import SiteManagement from './pages/SiteManagement';
-import BuyTokens from './pages/BuyTokens';
-import DocToJSONL from './pages/DocToJSONL';
-import FruitlesBridge from './pages/FruitlesBridge';
-import AssetFinder from './pages/AssetFinder';
+import TrainAI from './pages/TrainAI';
+import TrainingMonitor from './pages/TrainingMonitor';
+import Upload from './pages/Upload';
+import Agents from './pages/Agents';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "Upload": Upload,
-    "Library": Library,
-    "ContentViewer": ContentViewer,
-    "Export": Export,
     "AIChat": AIChat,
-    "TrainAI": TrainAI,
-    "TrainingMonitor": TrainingMonitor,
-    "MyAssets": MyAssets,
-    "Marketplace": Marketplace,
+    "AssetFinder": AssetFinder,
+    "BuyTokens": BuyTokens,
+    "ContentViewer": ContentViewer,
+    "Dashboard": Dashboard,
+    "DocToJSONL": DocToJSONL,
     "Earnings": Earnings,
+    "Export": Export,
+    "FineTuningBackend": FineTuningBackend,
+    "FruitlesBridge": FruitlesBridge,
     "GrowthAgent": GrowthAgent,
     "Invite": Invite,
+    "Library": Library,
+    "Marketplace": Marketplace,
     "ModelStudio": ModelStudio,
-    "FineTuningBackend": FineTuningBackend,
+    "MyAssets": MyAssets,
     "SiteManagement": SiteManagement,
-    "BuyTokens": BuyTokens,
-    "DocToJSONL": DocToJSONL,
-    "FruitlesBridge": FruitlesBridge,
-    "AssetFinder": AssetFinder,
+    "TrainAI": TrainAI,
+    "TrainingMonitor": TrainingMonitor,
+    "Upload": Upload,
+    "Agents": Agents,
 }
 
 export const pagesConfig = {
