@@ -105,6 +105,26 @@ export default function Layout({ children, currentPageName }) {
             radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.06), transparent 60%),
             radial-gradient(100% 60% at 50% 120%, rgba(0,0,0,0.65), rgba(0,0,0,0.9));
         }
+        /* Scanlines overlay */
+        .k-scanlines {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          background: repeating-linear-gradient(180deg, rgba(255,0,0,0.03) 0, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 3px);
+          mix-blend-mode: overlay;
+          opacity: .6;
+        }
+        /* Scanlines overlay */
+        .k-scanlines {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          background: repeating-linear-gradient(180deg, rgba(255,0,0,0.03) 0, rgba(255,0,0,0.03) 1px, transparent 1px, transparent 3px);
+          mix-blend-mode: overlay;
+          opacity: .6;
+        }
 
         /* Metallic panels */
         .k-metal {
@@ -128,53 +148,29 @@ export default function Layout({ children, currentPageName }) {
           border-bottom: 1px solid hsl(var(--border));
           box-shadow: 0 0 0 1px rgba(245,158,11,0.12), 0 8px 24px rgba(0,0,0,0.45);
           color: hsl(var(--foreground));
+          position: relative;
+        }
+        .k-topbar::after {
+          content: "";
+          position: absolute;
+          left: 0; right: 0; top: 0;
+          height: 3px;
+          background: linear-gradient(90deg, rgba(239,68,68,0.85), rgba(245,158,11,0.85));
+          box-shadow: 0 0 12px rgba(239,68,68,0.5);
         }
 
-        /* Sidebar — Klingon LCARS pads */
-        [data-theme=klingon] [data-sidebar=sidebar] {
-          background-color: #0a0b0d !important;
-          color: #f9f5e6 !important;
-        }
-        /* Group label */
-        [data-theme=klingon] [data-sidebar=group-label] {
-          color: #f9dd9b;
-          text-transform: uppercase;
-          letter-spacing: .14em;
-          font-weight: 800;
-          opacity: .95;
-        }
-        /* LCARS pads */
-        [data-theme=klingon] [data-sidebar=menu] { padding-top: 2px; }
-        [data-theme=klingon] [data-sidebar=menu-item] { position: relative; margin: 6px 0; }
-        [data-theme=klingon] [data-sidebar=menu-item]:not(:last-child)::after {
-          content: "";
-          position: absolute; left: 0; right: 0; bottom: -6px; height: 4px;
-          background: #1b1c20; border-radius: 2px;
-        }
-        [data-theme=klingon] [data-sidebar=menu-button] {
-          color: #f8f6ea;
-          background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-          height: 48px;
-          padding: 0 14px 0 12px;
-          border-radius: 0 14px 14px 0;
-          text-transform: uppercase;
-          letter-spacing: .16em;
-          font-weight: 800;
-          box-shadow: inset 0 0 0 1px rgba(245,158,11,0.20);
-        }
+        /* Sidebar — Klingon battle console */
+        [data-theme=klingon] [data-sidebar=sidebar] { background-color: #0a0b0d !important; color: #f9f5e6 !important; }
+        [data-theme=klingon] [data-sidebar=group-label] { color:#f9dd9b; text-transform:uppercase; letter-spacing:.12em; font-weight:800; opacity:.95; }
+        [data-theme=klingon] [data-sidebar=menu] { padding: 2px 6px; }
+        [data-theme=klingon] [data-sidebar=menu-item] { position:relative; margin:8px 0; }
+        [data-theme=klingon] [data-sidebar=menu-item]:not(:last-child)::after { content:""; position:absolute; left:0; right:0; bottom:-8px; height:6px; background:#15161a; border-radius:3px; }
+        [data-theme=klingon] [data-sidebar=menu-button] { position:relative; color:#f8f6ea; background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); height:52px; padding:0 16px 0 14px; border-radius:0 16px 16px 0; text-transform:uppercase; letter-spacing:.12em; font-weight:800; box-shadow: inset 0 0 0 1px rgba(245,158,11,0.22); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%); }
+        [data-theme=klingon] [data-sidebar=menu-button]:hover { background: linear-gradient(90deg, rgba(245,158,11,0.22), rgba(245,158,11,0.12)); color:#ffe2ad; box-shadow: inset 0 0 0 1px rgba(245,158,11,0.5), 0 0 18px rgba(245,158,11,0.2); }
         [data-theme=klingon] [data-sidebar=menu-button] svg { color: currentColor; }
-        [data-theme=klingon] [data-sidebar=menu-button]:hover {
-          background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.10));
-          color: #ffd9a1;
-          box-shadow: inset 0 0 0 1px rgba(245,158,11,0.45), 0 0 16px rgba(245,158,11,0.18);
-        }
-        /* Active strip + color */
-        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
-          color: #ffb4a8;
-          background: linear-gradient(90deg, rgba(239,68,68,0.20), rgba(245,158,11,0.16));
-          box-shadow: inset 0 0 0 1px rgba(239,68,68,0.55), 0 0 22px rgba(239,68,68,0.22);
-          border-left: 6px solid #f59e0b;
-        }
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] { color:#ffb3aa; background: linear-gradient(90deg, rgba(239,68,68,0.28), rgba(245,158,11,0.18)); box-shadow: inset 0 0 0 1px rgba(239,68,68,0.55), 0 0 24px rgba(239,68,68,0.24); border-left: 8px solid #ef4444; }
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true]::before { content:""; position:absolute; left:2px; top:50%; width:7px; height:7px; transform: translateY(-50%); background:#ef4444; border-radius:50%; box-shadow: 0 0 10px rgba(239,68,68,0.8); animation: k-pulse 1.6s infinite; }
+        @keyframes k-pulse { 0%,100%{opacity:.7; transform: translateY(-50%) scale(1);} 50%{opacity:1; transform: translateY(-50%) scale(1.25);} }
 
         /* General typography improvements */
         [data-theme=klingon] h1, [data-theme=klingon] h2, [data-theme=klingon] h3 {
@@ -193,6 +189,8 @@ export default function Layout({ children, currentPageName }) {
 
       <div className="k-starfield" aria-hidden="true" />
       <div className="k-vignette" aria-hidden="true" />
+      <div className="k-scanlines" aria-hidden="true" />
+      <div className="k-scanlines" aria-hidden="true" />
 
       <SidebarProvider defaultOpen={true}>
         <Sidebar collapsible="icon" variant="none" className="bg-[#0b0c10] text-[#f7f4e8]">
