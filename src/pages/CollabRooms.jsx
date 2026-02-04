@@ -8,6 +8,7 @@ import GroupRoomCard from "../components/collab/GroupRoomCard";
 import KanbanBoard from "../components/collab/KanbanBoard";
 import ProblemTree from "../components/collab/ProblemTree";
 import PingPanel from "../components/collab/PingPanel";
+import { runBuildAutomation } from "../components/collab/BuildAutomation";
 import { Badge } from "@/components/ui/badge";
 
 export default function CollabRooms() {
@@ -68,6 +69,10 @@ export default function CollabRooms() {
   const moveTask = async (task, to) => {
     await base44.entities.CollabTask.update(task.id, { column: to });
     setTasks(prev => prev.map(x => x.id === task.id ? { ...x, column: to } : x));
+    if (to === 'build' && selected) {
+      // Fire-and-forget automation for build
+      runBuildAutomation(selected, task);
+    }
   };
 
   return (

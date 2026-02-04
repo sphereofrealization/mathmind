@@ -50,8 +50,8 @@ export default function KanbanBoard({ room, tasks, onCreate, onMove }) {
                 <div className="mt-2 flex gap-2">
                   {c.key !== 'ideas' && <Button size="sm" variant="outline" onClick={()=>onMove(t,'ideas')}>To Ideas</Button>}
                   {c.key !== 'research' && <Button size="sm" variant="outline" onClick={()=>onMove(t,'research')}>To Research</Button>}
-                  {c.key !== 'build' && <Button size="sm" variant="outline" onClick={()=>onMove(t,'build')}>To Build</Button>}
-                  {c.key !== 'deploy' && <Button size="sm" variant="outline" onClick={()=>onMove(t,'deploy')}>To Deploy</Button>}
+                  {c.key !== 'build' && <Button size="sm" className="bg-indigo-600 text-white hover:bg-indigo-700" onClick={()=>onMove(t,'build')}>To Build</Button>}
+                  {c.key !== 'deploy' && <Button size="sm" variant="outline" onClick={()=>onMove(t,'deploy')}>To Deploy</Button>
                 </div>
               </div>
             ))}

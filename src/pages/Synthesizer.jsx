@@ -8,6 +8,7 @@ import PlanPanel from "../components/synth/PlanPanel";
 import KanbanBoard from "../components/collab/KanbanBoard";
 import PingPanel from "../components/collab/PingPanel";
 import ProblemTree from "../components/collab/ProblemTree";
+import { runBuildAutomation } from "../components/collab/BuildAutomation";
 import { Badge } from "@/components/ui/badge";
 
 export default function Synthesizer() {
@@ -42,6 +43,9 @@ export default function Synthesizer() {
   const moveTask = async (task, to) => {
     await base44.entities.CollabTask.update(task.id, { column: to });
     setTasks(prev => prev.map(x => x.id === task.id ? { ...x, column: to } : x));
+    if (to === 'build' && selected) {
+      runBuildAutomation(selected, task);
+    }
   };
 
   return (
