@@ -99,6 +99,8 @@ export default function AgentsPage() {
     // set interval
     timersRef.current[agent.id] = setInterval(() => runTickGuarded(agent.id), interval);
     setAgents((prev) => prev.map(a => a.id === agent.id ? { ...a, loop_enabled: true } : a));
+    // run immediately once
+    await runTickGuarded(agent.id, true);
   };
 
   const stopLoop = async (agent) => {
@@ -301,7 +303,7 @@ Keep it concise and high-signal.`;
                     {a.loop_enabled ? (
                       <Button variant="outline" onClick={() => stopLoop(a)}><Square className="w-4 h-4 mr-1" /> Stop loop</Button>
                     ) : (
-                      <Button className="text-white" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => startLoop(a)}><Play className="w-4 h-4 mr-1" /> Start loop</Button>
+                      <Button className="text-white" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => startLoop(a)}><Play className="w-4 h-4 mr-1" /> Run continuously</Button>
                     )}
                     <Button variant="outline" onClick={() => runOnce(a)}><RefreshCw className="w-4 h-4 mr-1" /> Run once</Button>
                     <Button variant="outline" onClick={() => { setSelected(a); loadLogs(a.id); }}><List className="w-4 h-4 mr-1" /> View logs</Button>
