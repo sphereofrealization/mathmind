@@ -135,7 +135,7 @@ export default function ContentViewerPage() {
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4" style={{color: 'var(--primary-navy)'}}>Extracted Content</h3>
               <div className="bg-white p-4 rounded-lg border max-h-[60vh] overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-sm" style={{color: 'var(--text-primary)', fontFamily: 'sans-serif'}}>
+                <pre className="whitespace-pre-wrap text-sm" style={{color: '#000', fontFamily: 'sans-serif'}}>
                   {book.extracted_content || "No content extracted."}
                 </pre>
               </div>
