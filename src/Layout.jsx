@@ -19,7 +19,7 @@ import {
     Cpu, // NEW: Cpu icon for FT Backend
     Settings, // NEW: for Site Management
     Link2, // NEW: for On-Chain Bridge
-    Search // NEW: search icon for Asset Finder,
+    Search, // NEW: search icon for Asset Finder
     Bot // NEW: Agents
 } from "lucide-react";
 import {
