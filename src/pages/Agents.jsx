@@ -377,6 +377,15 @@ export default function AgentsPage() {
     }
   };
 
+  // Auto-refresh logs while the panel is open
+  useEffect(() => {
+    if (!selected) return;
+    // initial load and then every 5 seconds
+    loadLogs(selected.id);
+    const int = setInterval(() => loadLogs(selected.id), 5000);
+    return () => clearInterval(int);
+  }, [selected?.id]);
+
   useEffect(() => {
     // attach timers for agents with loop_enabled on initial load
     agents.forEach((a) => {
