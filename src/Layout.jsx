@@ -89,7 +89,7 @@ const navigationItems = [
     title: "Collab Rooms",
     url: createPageUrl("CollabRooms"),
     icon: GitBranch,
-  }
+  },
   // NEW: FT Backend
   {
     title: "FT Backend",
