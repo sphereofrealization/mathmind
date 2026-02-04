@@ -330,7 +330,7 @@ export default function Layout({ children, currentPageName }) {
             }
             .metal-brut, .k-panel, .k-navbtn { border-radius: 0 !important; }
             :root { --font-heading: 'Orbitron', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; --font-body: 'Rajdhani', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
-              html, body { font-family: var(--font-body); letter-spacing: 0.02em; }
+              html, body { margin: 0; padding: 0; font-family: var(--font-body); letter-spacing: 0.02em; }
               h1, h2, h3, .SidebarGroupLabel, .k-navbtn, .k-glow { font-family: var(--font-heading) !important; letter-spacing: 0.08em; text-transform: uppercase; }
               .k-navbtn span { font-family: var(--font-heading) !important; }
             * { font-family: var(--font-body); }
@@ -342,7 +342,7 @@ export default function Layout({ children, currentPageName }) {
       <div className="min-h-screen flex w-full" style={{backgroundColor: 'var(--soft-gray)', animation: 'klingon-hum 14s infinite linear'}}>
         <div className="klingon-grid"></div>
         <div className="klingon-scanlines"></div>
-        <Sidebar className="border-r border-gray-200 k-panel k-angled sticky top-0 h-screen">
+        <Sidebar className="border-r border-gray-200 k-panel k-angled fixed top-0 left-0 h-screen">
           <SidebarHeader className="border-b border-gray-200 p-6 k-panel k-angled">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" 
@@ -454,7 +454,7 @@ export default function Layout({ children, currentPageName }) {
           </SidebarFooter>
         </Sidebar>
 
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col md:ml-[280px] ml-0">
           <header className="bg-white border-b border-gray-200 px-6 py-4 md:hidden shadow-sm k-panel k-angled">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200" />

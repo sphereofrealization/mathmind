@@ -130,21 +130,21 @@ export default function LibraryPage() {
                                <BookOpen className="w-8 h-8" style={{color: 'var(--accent-gold)'}} />
                              </div>
                            </div>
-                           <h3 className="text-xl font-semibold mb-2 flex-grow" style={{color: 'var(--primary-navy)'}}>{book.title}</h3>
+                           <h3 className="text-xl font-semibold mb-2 flex-grow" style={{color: '#000'}}>{book.title}</h3>
                            {book.author && (
-                             <p className="flex items-center gap-2 text-sm mb-3" style={{color: 'var(--text-secondary)'}}>
-                               <User className="w-4 h-4" /> {book.author}
-                             </p>
+                             <p className="flex items-center gap-2 text-sm mb-3" style={{color: '#000'}}>
+                                                             <User className="w-4 h-4" /> {book.author}
+                                                           </p>
                            )}
                            <div className="flex items-center justify-between text-sm mb-4">
                              <Badge variant="outline" className={`${categoryColors[book.category]} border`}>
                                <Tag className="w-3 h-3 mr-1" />
                                {_.startCase(book.category?.replace(/_/g, ' '))}
                              </Badge>
-                             <span className="flex items-center gap-1" style={{color: 'var(--text-secondary)'}}>
-                               <Calendar className="w-4 h-4" />
-                               {format(new Date(book.created_date), "MMM d, yyyy")}
-                             </span>
+                             <span className="flex items-center gap-1" style={{color: '#000'}}>
+                                                             <Calendar className="w-4 h-4" />
+                                                             {format(new Date(book.created_date), "MMM d, yyyy")}
+                                                           </span>
                            </div>
                         </CardContent>
                       </Card>
