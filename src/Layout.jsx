@@ -53,29 +53,29 @@ export default function Layout({ children, currentPageName }) {
       <style>{`
         /* shadcn/ui theme tokens (HSL triplets) */
         [data-theme=klingon] {
-          --background: 220 18% 6%;
-          --foreground: 40 100% 96%;
-          --muted: 220 16% 12%;
-          --muted-foreground: 40 60% 86%;
-          --card: 220 17% 11%;
-          --card-foreground: 40 100% 96%;
-          --popover: 220 18% 6%;
-          --popover-foreground: 40 100% 96%;
-          --border: 220 18% 28%;
-          --input: 220 18% 28%;
-          --ring: 38 96% 54%; /* brighter amber outline */
-          --primary: 38 96% 54%;
+          --background: 20 22% 6%;
+          --foreground: 35 85% 92%;
+          --muted: 20 18% 12%;
+          --muted-foreground: 35 45% 78%;
+          --card: 18 20% 10%;
+          --card-foreground: 35 85% 92%;
+          --popover: 20 22% 6%;
+          --popover-foreground: 35 85% 92%;
+          --border: 18 22% 28%;
+          --input: 18 22% 28%;
+          --ring: 0 78% 46%;
+          --primary: 20 60% 42%;
           --primary-foreground: 24 100% 10%;
-          --secondary: 220 16% 14%;
+          --secondary: 18 18% 14%;
           --secondary-foreground: 40 95% 96%;
 
           /* Sidebar tokens used by the sidebar component */
-          --sidebar: 220 17% 11%;
-          --sidebar-foreground: 40 100% 96%;
-          --sidebar-accent: 38 96% 54%;
+          --sidebar: 18 20% 10%;
+          --sidebar-foreground: 35 85% 92%;
+          --sidebar-accent: 20 60% 42%;
           --sidebar-accent-foreground: 24 100% 10%;
-          --sidebar-border: 220 18% 28%;
-          --sidebar-ring: 38 96% 54%;
+          --sidebar-border: 18 22% 28%;
+          --sidebar-ring: 0 78% 46%;
         }
 
         /* Starfield background (CSS-only) */
@@ -131,13 +131,26 @@ export default function Layout({ children, currentPageName }) {
           background:
             linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.12)) padding-box,
             repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px),
-            linear-gradient(0deg, rgba(255,180,0,0.04), rgba(255,180,0,0));
+            linear-gradient(0deg, rgba(176,111,43,0.10), rgba(176,111,43,0));
           border: 1px solid hsl(var(--border));
           box-shadow:
             inset 0 1px 0 rgba(255,255,255,0.06),
-            0 0 0 1px rgba(0,0,0,0.45),
+            0 0 0 1px rgba(0,0,0,0.5),
             0 10px 30px rgba(0,0,0,0.35);
           backdrop-filter: saturate(1.1) contrast(1.05);
+        }
+
+        /* Subtle pIqaD-like runic watermark */
+        .k-runes {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          opacity: .05;
+          mix-blend-mode: overlay;
+          background:
+            conic-gradient(from 45deg at 10% 20%, rgba(255,255,255,0.06) 2deg, transparent 6deg) 0 0/120px 120px,
+            conic-gradient(from -15deg at 60% 70%, rgba(255,255,255,0.04) 2deg, transparent 6deg) 0 0/160px 160px;
         }
 
         /* Top bar styling (higher contrast) */
@@ -159,18 +172,61 @@ export default function Layout({ children, currentPageName }) {
           box-shadow: 0 0 12px rgba(239,68,68,0.5);
         }
 
-        /* Sidebar — Klingon battle console */
-        [data-theme=klingon] [data-sidebar=sidebar] { background-color: #0a0b0d !important; color: #f9f5e6 !important; }
-        [data-theme=klingon] [data-sidebar=group-label] { color:#f9dd9b; text-transform:uppercase; letter-spacing:.12em; font-weight:800; opacity:.95; }
-        [data-theme=klingon] [data-sidebar=menu] { padding: 2px 6px; }
-        [data-theme=klingon] [data-sidebar=menu-item] { position:relative; margin:8px 0; }
-        [data-theme=klingon] [data-sidebar=menu-item]:not(:last-child)::after { content:""; position:absolute; left:0; right:0; bottom:-8px; height:6px; background:#15161a; border-radius:3px; }
-        [data-theme=klingon] [data-sidebar=menu-button] { position:relative; color:#f8f6ea; background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); height:52px; padding:0 16px 0 14px; border-radius:0 16px 16px 0; text-transform:uppercase; letter-spacing:.12em; font-weight:800; box-shadow: inset 0 0 0 1px rgba(245,158,11,0.22); clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%); }
-        [data-theme=klingon] [data-sidebar=menu-button]:hover { background: linear-gradient(90deg, rgba(245,158,11,0.22), rgba(245,158,11,0.12)); color:#ffe2ad; box-shadow: inset 0 0 0 1px rgba(245,158,11,0.5), 0 0 18px rgba(245,158,11,0.2); }
+        /* Sidebar — Klingon armor plates */
+        [data-theme=klingon] [data-sidebar=sidebar] { background-color: hsl(var(--sidebar)); color: hsl(var(--sidebar-foreground)); position: relative; }
+        [data-theme=klingon] [data-sidebar=menu] { padding: 4px 8px; }
+        [data-theme=klingon] [data-sidebar=menu-item] { position: relative; margin: 10px 0; }
+        [data-theme=klingon] [data-sidebar=menu-item]:not(:last-child)::after { content:""; position:absolute; left:8px; right:8px; bottom:-8px; height:6px; background:#2d2a28; border-radius:2px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); }
+        [data-theme=klingon] [data-sidebar=menu-button] {
+          position: relative;
+          height: 58px;
+          padding: 0 18px 0 16px;
+          font-weight: 900;
+          text-transform: uppercase;
+          letter-spacing: .14em;
+          color: hsl(var(--sidebar-foreground));
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)) padding-box,
+            linear-gradient(0deg, rgba(176,111,43,0.18), rgba(176,111,43,0)) padding-box;
+          border: 1px solid hsl(var(--sidebar-border));
+          box-shadow:
+            inset 0 0 0 1px rgba(255,255,255,0.06),
+            0 0 0 1px rgba(0,0,0,0.5),
+            0 8px 26px rgba(0,0,0,0.35);
+          border-radius: 0;
+          clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 12px 50%);
+        }
+        [data-theme=klingon] [data-sidebar=menu-button]::after {
+          content:"";
+          position:absolute; inset:3px;
+          background: linear-gradient(180deg,#2d2a28,#231f1d);
+          border: 1px solid rgba(0,0,0,0.6);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+          clip-path: inherit;
+          z-index: -1;
+        }
+        [data-theme=klingon] [data-sidebar=menu-button]:hover {
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.15)) padding-box,
+            linear-gradient(0deg, rgba(176,111,43,0.28), rgba(176,111,43,0.08)) padding-box;
+          color: #ffe6c2;
+          box-shadow: inset 0 0 0 1px rgba(245,158,11,0.5), 0 0 18px rgba(176,111,43,0.2);
+        }
         [data-theme=klingon] [data-sidebar=menu-button] svg { color: currentColor; }
-        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] { color:#ffb3aa; background: linear-gradient(90deg, rgba(239,68,68,0.28), rgba(245,158,11,0.18)); box-shadow: inset 0 0 0 1px rgba(239,68,68,0.55), 0 0 24px rgba(239,68,68,0.24); border-left: 8px solid #ef4444; }
-        [data-theme=klingon] [data-sidebar=menu-button][data-active=true]::before { content:""; position:absolute; left:2px; top:50%; width:7px; height:7px; transform: translateY(-50%); background:#ef4444; border-radius:50%; box-shadow: 0 0 10px rgba(239,68,68,0.8); animation: k-pulse 1.6s infinite; }
-        @keyframes k-pulse { 0%,100%{opacity:.7; transform: translateY(-50%) scale(1);} 50%{opacity:1; transform: translateY(-50%) scale(1.25);} }
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
+          color: #ffe0d6;
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.25)) padding-box,
+            linear-gradient(90deg, rgba(139,26,26,0.4), rgba(176,111,43,0.22)) padding-box;
+          border-color: rgba(139,26,26,0.55);
+          box-shadow: inset 0 0 0 1px rgba(239,68,68,0.55), 0 0 28px rgba(139,26,26,0.28);
+        }
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true]::before {
+          content:"";
+          position:absolute; left:0; top:0; bottom:0; width:8px;
+          background: linear-gradient(180deg,#a31b1b,#f59e0b);
+          box-shadow: 0 0 14px rgba(163,27,27,0.5);
+        }
 
         /* General typography improvements */
         [data-theme=klingon] h1, [data-theme=klingon] h2, [data-theme=klingon] h3 {
@@ -212,6 +268,7 @@ export default function Layout({ children, currentPageName }) {
       <div className="k-starfield" aria-hidden="true" />
       <div className="k-vignette" aria-hidden="true" />
       <div className="k-scanlines" aria-hidden="true" />
+      <div className="k-runes" aria-hidden="true" />
       <div className="k-grid" aria-hidden="true" />
       <div className="k-grid" aria-hidden="true" />
       <div className="k-scanlines" aria-hidden="true" />
