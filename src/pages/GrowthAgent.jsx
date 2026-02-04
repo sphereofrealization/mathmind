@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { ReferralCampaign } from "@/entities/ReferralCampaign";
 import { ReferralEvent } from "@/entities/ReferralEvent";
@@ -475,7 +474,7 @@ ${personalization}`;
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Megaphone className="w-5 h-5" />
-              Growth Agent (Limbertwig)
+              Growth
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
