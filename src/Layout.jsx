@@ -24,21 +24,7 @@ import {
     GitBranch, // NEW: Collab Rooms
     Layers // NEW: Synthesizer
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarProvider,
-  SidebarTrigger,
-  SidebarInset,
-} from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { MathBook } from "@/entities/MathBook";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { FruitlesTransaction } from "@/entities/FruitlesTransaction";
