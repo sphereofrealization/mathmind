@@ -112,20 +112,20 @@ export default function TrainingMonitorPage() {
       setTrainedAIs(ais);
       const allJobs = await withRetry(() => TrainingJob.list('-updated_date', 50), 6, 800);
       setJobs(allJobs);
-      // Success: set next allowed with jitter (60s + 0-15s)
-      const jitter = Math.floor(Math.random() * 15000);
-      nextAllowedRef.current = Date.now() + 60000 + jitter;
+      // Success: set next allowed with jitter (20s + 0-5s)
+      const jitter = Math.floor(Math.random() * 5000);
+      nextAllowedRef.current = Date.now() + 20000 + jitter;
       setRateLimited(false);
       setRateMessage("");
     } catch (e) {
-      // On error (likely 429), extend cooldown (120s + jitter)
+      // On error (likely 429), brief cooldown (45s + jitter)
       const msg = String(e || '');
       if (msg.includes('429') || msg.toLowerCase().includes('rate')) {
-        const jitter = Math.floor(Math.random() * 20000);
-        nextAllowedRef.current = Date.now() + 120000 + jitter;
+        const jitter = Math.floor(Math.random() * 10000);
+        nextAllowedRef.current = Date.now() + 45000 + jitter;
         setRateLimited(true);
         const waitSec = Math.ceil((nextAllowedRef.current - Date.now()) / 1000);
-        setRateMessage(`Rate limit hit. Auto-pausing refreshes for ~${waitSec}s.`);
+        setRateMessage(`Rate limit hit. Pausing refresh for ~${waitSec}s; training can still run.`);
       }
       console.warn('refreshAll failed:', e);
     } finally {
@@ -295,7 +295,7 @@ export default function TrainingMonitorPage() {
         notes: null
       });
 
-      const batchBase = 10; // smaller batches reduce 429 risk (global default lowered)
+      const batchBase = 4; // smaller batches reduce 429 risk further to avoid 429s
       for (let bIndex = 0; bIndex < validBooks.length; bIndex++) {
         const book = validBooks[bIndex];
         const chunks = perBookChunks[bIndex];
@@ -396,7 +396,7 @@ export default function TrainingMonitorPage() {
           }
 
           // Gentle pacing to avoid rate limits (slightly slower to reduce 429s)
-          await sleep(400);
+          await sleep(1200);
         }
       }
 
@@ -531,16 +531,23 @@ Be compact, technical, and specific.`;
     } catch (e) {
       console.error('Indexing error', e);
       try {
-        // Update job error detail with safe string slice
-        const errStr = String(e || '').slice(0, 500);
+        const errStrFull = String(e || '');
+        const isRate = errStrFull.includes('429') || errStrFull.toLowerCase().includes('rate');
+        const errStr = errStrFull.slice(0, 500);
         let jobList = await TrainingJob.filter({ ai_id: ai.id });
         if (jobList[0]) {
-          await TrainingJob.update(jobList[0].id, { status: 'error', last_error: errStr, eta_seconds: null, throughput_cpm: null, notes: null });
+          await TrainingJob.update(jobList[0].id, {
+            status: isRate ? 'queued' : 'error',
+            last_error: isRate ? null : errStr,
+            eta_seconds: null,
+            throughput_cpm: null,
+            notes: isRate ? 'Paused by rate limit; click Start/Resume to continue.' : null
+          });
         }
-        await TrainedAI.update(ai.id, { training_status: 'error' }); // Also update the AI's status
-        // Optimistic error reflections
-        upsertJobLocal(ai.id, { status: 'error', last_error: String(e || ''), notes: null });
-        patchAIStatusLocal(ai.id, { training_status: 'error' });
+        await TrainedAI.update(ai.id, { training_status: isRate ? 'training' : 'error' });
+        // Optimistic reflections
+        upsertJobLocal(ai.id, { status: isRate ? 'queued' : 'error', last_error: isRate ? null : errStr, notes: isRate ? 'Paused by rate limit; click Start/Resume to continue.' : null });
+        patchAIStatusLocal(ai.id, { training_status: isRate ? 'training' : 'error' });
       } catch (updateError) {
         console.error("Failed to update job or AI with error status:", updateError);
       }
