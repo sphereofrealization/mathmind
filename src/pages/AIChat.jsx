@@ -21,6 +21,9 @@ import { Switch } from '@/components/ui/switch';
 import { AIAsset } from '@/entities/AIAsset';
 import { base44 } from '@/api/base44Client';
 import { chargeChatUsage } from '@/components/economy/Economy';
+import { AIAsset } from '@/entities/AIAsset';
+import { base44 } from '@/api/base44Client';
+import { chargeChatUsage } from '@/components/economy/Economy';
 
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));

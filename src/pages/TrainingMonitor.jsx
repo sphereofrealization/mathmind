@@ -370,6 +370,14 @@ export default function TrainingMonitorPage() {
             aiId: ai.id,
             bookId: book.id
           });
+          // ECONOMY: reward indexing per batch (aggregate)
+          await rewardIndexing({
+            agentOwner: null, // manual training, no agent context
+            bookOwner: book?.created_by,
+            chunksCount: records.length,
+            aiId: ai.id,
+            bookId: book.id
+          });
           const deltaSec = (Date.now() - lastTick) / 1000;
           lastTick = Date.now();
 
