@@ -52,6 +52,7 @@ export default function TrainingMonitorPage() {
   const [rateLimited, setRateLimited] = useState(false);
   const [rateMessage, setRateMessage] = useState("");
   const retryTimersRef = useRef({});
+  const aiCooldownRef = useRef({});
 
   // mint/list editions state
   const [issueCount, setIssueCount] = useState({}); // {aiId: number}
@@ -237,6 +238,11 @@ export default function TrainingMonitorPage() {
       // Pause background refresh while training to reduce API pressure
       nextAllowedRef.current = Date.now() + 60000;
       if (retryTimersRef.current[ai.id]) { clearTimeout(retryTimersRef.current[ai.id]); delete retryTimersRef.current[ai.id]; }
+      // If AI is cooling down due to rate limits, skip immediate restart
+      if (aiCooldownRef.current[ai.id] && Date.now() < aiCooldownRef.current[ai.id]) {
+        setProcessingAI(null);
+        return;
+      }
     try {
       // Ensure job exists (resume if exists)
       let jobList = await TrainingJob.filter({ ai_id: ai.id });
@@ -707,6 +713,8 @@ Be compact, technical, and specific.`;
                 const job = jobs.find(j => j.ai_id === ai.id);
                 const jobStatus = job?.status || 'queued';
                 const jobProgress = job?.progress || 0;
+                const coolingDown = aiCooldownRef.current && aiCooldownRef.current[ai.id] && Date.now() < aiCooldownRef.current[ai.id];
+                const cooldownMs = coolingDown ? (aiCooldownRef.current[ai.id] - Date.now()) : 0;
 
                 const progressText =
                   jobStatus === 'preprocessing' ? 'Preparing mathematical content for processing' :
@@ -846,6 +854,11 @@ Be compact, technical, and specific.`;
                         {job?.notes && (
                           <p className="text-sm mt-2 text-amber-600">{job.notes}</p>
                         )}
+                        {coolingDown && (
+                          <p className="text-sm mt-1" style={{color: 'var(--text-secondary)'}}>
+                            Auto-resume in ~{Math.ceil(cooldownMs / 1000)}s
+                          </p>
+                        )}
                         {job?.status === 'error' && job?.last_error && (
                           <p className="text-sm mt-2 text-red-600">Error: {job.last_error}</p>
                         )}
@@ -853,15 +866,17 @@ Be compact, technical, and specific.`;
                           <Button
                             size="sm"
                             onClick={() => buildKnowledgeIndex(ai)}
-                            disabled={processingAI === ai.id}
+                            disabled={processingAI === ai.id || coolingDown}
                             className="text-white"
                             style={{backgroundColor: 'var(--accent-gold)'}}
                           >
                             {processingAI === ai.id
                               ? 'Indexing...'
-                              : (ai.training_status === 'completed' || jobStatus === 'completed'
-                                  ? 'Rebuild Training'
-                                  : 'Start/Resume Training')}
+                              : coolingDown
+                                ? 'Cooling down...'
+                                : (ai.training_status === 'completed' || jobStatus === 'completed'
+                                    ? 'Rebuild Training'
+                                    : 'Start/Resume Training')}
                           </Button>
 
                           {/* NEW: Finalize (skip analysis) to unstick completion */}
