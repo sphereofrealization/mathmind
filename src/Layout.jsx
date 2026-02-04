@@ -134,7 +134,7 @@ const navigationItems = [
     icon: DollarSign,
   },
   {
-    title: "Growth Agent",
+    title: "Growth",
     url: createPageUrl("GrowthAgent"),
     icon: UserPlus,
   },
