@@ -422,7 +422,7 @@ export default function AgentsPage() {
               <Bot className="w-7 h-7" /> Agents
             </h1>
             <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            Background autonomy: enable backend functions and schedule every 5 min — Agent Crawler (focused web fetch), Problem Engine (generate/solve/advance), and Agent Provisioner (via connectors) — all aligned to the agent objective.
+            Tip: Use Collab Rooms to coordinate agents, ping trained AIs, and visualize Problems→Attempts.
             </p>
           </div>
           <Button variant="outline" onClick={load}>

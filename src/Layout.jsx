@@ -20,7 +20,8 @@ import {
     Settings, // NEW: for Site Management
     Link2, // NEW: for On-Chain Bridge
     Search, // NEW: search icon for Asset Finder
-    Bot // NEW: Agents
+    Bot, // NEW: Agents
+    GitBranch // NEW: Collab Rooms
 } from "lucide-react";
 import {
   Sidebar,
@@ -84,6 +85,11 @@ const navigationItems = [
     url: createPageUrl("Agents"),
     icon: Bot,
   },
+  {
+    title: "Collab Rooms",
+    url: createPageUrl("CollabRooms"),
+    icon: GitBranch,
+  }
   // NEW: FT Backend
   {
     title: "FT Backend",

@@ -68,6 +68,7 @@ import SiteManagement from './pages/SiteManagement';
 import TrainAI from './pages/TrainAI';
 import TrainingMonitor from './pages/TrainingMonitor';
 import Upload from './pages/Upload';
+import CollabRooms from './pages/CollabRooms';
 import __Layout from './Layout.jsx';
 
 
@@ -93,6 +94,7 @@ export const PAGES = {
     "TrainAI": TrainAI,
     "TrainingMonitor": TrainingMonitor,
     "Upload": Upload,
+    "CollabRooms": CollabRooms,
 }
 
 export const pagesConfig = {
