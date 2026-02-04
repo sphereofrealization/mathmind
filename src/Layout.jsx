@@ -185,11 +185,35 @@ export default function Layout({ children, currentPageName }) {
         [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
         [data-theme=klingon] .text-gray-600 { color: hsl(var(--muted-foreground)) !important; }
         [data-theme=klingon] .text-gray-500 { color: hsl(var(--muted-foreground)) !important; }
+        /* Grid overlay */
+        .k-grid {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          background:
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 24px),
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 24px);
+          opacity: .06;
+        }
+        /* Grid overlay */
+        .k-grid {
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          pointer-events: none;
+          background:
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 24px),
+            repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 24px);
+          opacity: .06;
+        }
       `}</style>
 
       <div className="k-starfield" aria-hidden="true" />
       <div className="k-vignette" aria-hidden="true" />
       <div className="k-scanlines" aria-hidden="true" />
+      <div className="k-grid" aria-hidden="true" />
+      <div className="k-grid" aria-hidden="true" />
       <div className="k-scanlines" aria-hidden="true" />
 
       <SidebarProvider defaultOpen={true}>
