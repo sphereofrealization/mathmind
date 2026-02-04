@@ -51,6 +51,7 @@ import AIChat from './pages/AIChat';
 import Agents from './pages/Agents';
 import AssetFinder from './pages/AssetFinder';
 import BuyTokens from './pages/BuyTokens';
+import CollabRooms from './pages/CollabRooms';
 import ContentViewer from './pages/ContentViewer';
 import Dashboard from './pages/Dashboard';
 import DocToJSONL from './pages/DocToJSONL';
@@ -65,11 +66,10 @@ import Marketplace from './pages/Marketplace';
 import ModelStudio from './pages/ModelStudio';
 import MyAssets from './pages/MyAssets';
 import SiteManagement from './pages/SiteManagement';
+import Synthesizer from './pages/Synthesizer';
 import TrainAI from './pages/TrainAI';
 import TrainingMonitor from './pages/TrainingMonitor';
 import Upload from './pages/Upload';
-import CollabRooms from './pages/CollabRooms';
-import Synthesizer from './pages/Synthesizer';
 import __Layout from './Layout.jsx';
 
 
@@ -78,6 +78,7 @@ export const PAGES = {
     "Agents": Agents,
     "AssetFinder": AssetFinder,
     "BuyTokens": BuyTokens,
+    "CollabRooms": CollabRooms,
     "ContentViewer": ContentViewer,
     "Dashboard": Dashboard,
     "DocToJSONL": DocToJSONL,
@@ -92,11 +93,10 @@ export const PAGES = {
     "ModelStudio": ModelStudio,
     "MyAssets": MyAssets,
     "SiteManagement": SiteManagement,
+    "Synthesizer": Synthesizer,
     "TrainAI": TrainAI,
     "TrainingMonitor": TrainingMonitor,
     "Upload": Upload,
-    "CollabRooms": CollabRooms,
-    "Synthesizer": Synthesizer,
 }
 
 export const pagesConfig = {
