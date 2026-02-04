@@ -51,6 +51,7 @@ export default function TrainingMonitorPage() {
   const nextAllowedRef = useRef(0);
   const [rateLimited, setRateLimited] = useState(false);
   const [rateMessage, setRateMessage] = useState("");
+  const retryTimersRef = useRef({});
 
   // mint/list editions state
   const [issueCount, setIssueCount] = useState({}); // {aiId: number}
@@ -100,6 +101,7 @@ export default function TrainingMonitorPage() {
   // unified, rate-limit-safe refresher with retry/backoff and guard
   const refreshAll = useCallback(async (force = false) => {
     const now = Date.now();
+    if (processingAI) return;
     // Allow manual refresh (force=true) to bypass cooldown check
     if (!force && now < nextAllowedRef.current) return;
     // Removed the block that would rate-limit a forced refresh, now it always proceeds.
@@ -132,7 +134,7 @@ export default function TrainingMonitorPage() {
       setIsLoading(false);
       setRefreshing(false);
     }
-  }, [refreshing, withRetry]);
+  }, [refreshing, withRetry, processingAI]);
 
   useEffect(() => {
     // Initial load
@@ -232,6 +234,9 @@ export default function TrainingMonitorPage() {
 
   const buildKnowledgeIndex = async (ai) => {
     setProcessingAI(ai.id);
+      // Pause background refresh while training to reduce API pressure
+      nextAllowedRef.current = Date.now() + 60000;
+      if (retryTimersRef.current[ai.id]) { clearTimeout(retryTimersRef.current[ai.id]); delete retryTimersRef.current[ai.id]; }
     try {
       // Ensure job exists (resume if exists)
       let jobList = await TrainingJob.filter({ ai_id: ai.id });
@@ -295,7 +300,7 @@ export default function TrainingMonitorPage() {
         notes: null
       });
 
-      const batchBase = 4; // smaller batches reduce 429 risk further to avoid 429s
+      const batchBase = 2; // smaller batches reduce 429 risk further to avoid 429s
       for (let bIndex = 0; bIndex < validBooks.length; bIndex++) {
         const book = validBooks[bIndex];
         const chunks = perBookChunks[bIndex];
@@ -504,7 +509,7 @@ Be compact, technical, and specific.`;
               lastAiProgress = prog;
             }
 
-            await sleep(1200);
+            await sleep(1800);
           }
         }
 
@@ -546,8 +551,16 @@ Be compact, technical, and specific.`;
         }
         await TrainedAI.update(ai.id, { training_status: isRate ? 'training' : 'error' });
         // Optimistic reflections
-        upsertJobLocal(ai.id, { status: isRate ? 'queued' : 'error', last_error: isRate ? null : errStr, notes: isRate ? 'Paused by rate limit; click Start/Resume to continue.' : null });
+        upsertJobLocal(ai.id, { status: isRate ? 'queued' : 'error', last_error: isRate ? null : errStr, notes: isRate ? 'Rate limit hit. Auto-resuming shortly...' : null });
         patchAIStatusLocal(ai.id, { training_status: isRate ? 'training' : 'error' });
+        // Schedule auto-resume when rate-limited
+        if (isRate && !retryTimersRef.current[ai.id]) {
+          const waitMs = 60000 + Math.floor(Math.random() * 15000);
+          retryTimersRef.current[ai.id] = setTimeout(() => {
+            delete retryTimersRef.current[ai.id];
+            buildKnowledgeIndex(ai);
+          }, waitMs);
+        }
       } catch (updateError) {
         console.error("Failed to update job or AI with error status:", updateError);
       }
