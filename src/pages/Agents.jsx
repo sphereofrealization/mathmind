@@ -195,11 +195,37 @@ export default function AgentsPage() {
       message: JSON.stringify(res || {})
     });
 
-    // NEW: generate fresh content and upload as a MathBook (dev_enabled controls this)
-    if (agent.dev_enabled) {
+    // Auto-execute top suggestions (best-effort)
+    const suggestions = Array.isArray(res?.suggestions) ? res.suggestions : [];
+    let didGenerate = false, didIndex = false, didResearch = false;
+    for (const s of suggestions.slice(0, 3)) {
+      const text = `${s?.title || ''} ${s?.description || ''}`.toLowerCase();
+      if (!didGenerate && /(generate|write|draft).*(content|note|paper|chapter)/.test(text)) {
+        await generateAndUploadContent(agent);
+        didGenerate = true;
+      } else if (!didIndex && /(index|train|build\s*index|rebuild)/.test(text)) {
+        const latest = await MathBook.list('-updated_date', 1);
+        if (latest && latest[0]) {
+          await ensureAgentAIAndIndex(agent, latest[0]);
+          didIndex = true;
+        }
+      } else if (!didResearch && /(research|literature|survey|review)/.test(text)) {
+        const schemaR = { type: 'object', properties: { notes: { type: 'array', items: { type: 'string' } } } };
+        const research = await InvokeLLM({
+          prompt: `Do focused math/ML research for: ${agent.objective}. Return 3 concise bullets with URLs.`,
+          response_json_schema: schemaR,
+          add_context_from_internet: true
+        });
+        await SiteAgentLog.create({ agent_id: agent.id, type: 'result', success: true, summary: 'Research results added', message: JSON.stringify(research) });
+        didResearch = true;
+      }
+    }
+
+    // Fallback: still generate one technical note if dev is enabled
+    if (agent.dev_enabled && !didGenerate) {
       await generateAndUploadContent(agent);
     }
-  };
+    };
 
   // NEW: helper to generate and upload new content as a MathBook
   const generateAndUploadContent = async (agent) => {
