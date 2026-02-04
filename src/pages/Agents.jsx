@@ -12,6 +12,9 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bot, Play, Square, RefreshCw, Globe, Clock, List } from "lucide-react";
 import { MathBook } from "@/entities/MathBook";
+import { TrainedAI } from "@/entities/TrainedAI";
+import { TrainingJob } from "@/entities/TrainingJob";
+import { AIChunk } from "@/entities/AIChunk";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
@@ -158,17 +161,20 @@ export default function AgentsPage() {
       agent.refine_enabled ? "refinement & UX improvements" : null
     ].filter(Boolean).join(", ");
 
-    const prompt = `You are a continuous site agent for a mathematics AI platform.
-Objective: ${agent.objective}
-Capabilities enabled: ${capabilities || "none"}.
+    const prompt = `You are an autonomous research-and-build agent for a mathematics AI platform.
+    Objective: ${agent.objective}
+    Strict constraints:
+    - Stay strictly within mathematics/ML methods relevant to the objective. Ignore unrelated news/topics (no space programs, politics, etc.).
+    - If research is enabled, use the open web only to fetch math/AI-relevant materials and include 1-3 source URLs in research_notes.
+    - Favor proposing concrete, novel method ideas, ablation plans, or dataset curation strategies the system can act on next.
 
-Produce JSON per schema with:
-- analysis: what you found and why it matters
-- plan: 3-6 concrete steps (brief)
-- suggestions: 3-8 actionable items with priority
-- research_notes: brief link-backed notes if web research is on
-- next_actions: the very next minimal steps to execute next tick
-Keep it concise and high-signal.`;
+    Return JSON per schema:
+    - analysis: 3-6 sentences, focused on the objective
+    - plan: 3-6 precise steps that progress the work
+    - suggestions: 3-8 actionable items with priority (low/medium/high)
+    - research_notes: 1-3 short bullets that each include a URL if research is on
+    - next_actions: 2-4 tiny executable steps for the next tick.
+    Be concise and high-signal.`;
 
     const res = await withRetry(() => InvokeLLM({
       prompt,
@@ -208,11 +214,12 @@ Keep it concise and high-signal.`;
       }
     };
 
-    const prompt = `Research on the open web a compact, original mathematics write-up (800-1500 words).
-- Choose a specific topic aligned with modern math (not generic), include symbols/LaTeX where helpful.
-- Provide a strong title and short author label (e.g., "Autonomous Agent").
-- Return JSON only per schema with fields: title, author, category, year, text.
-- The text must be original (no copy/paste), coherent, technically sound, and self-contained.`;
+    const prompt = `Using only math/ML-relevant web context, draft an original technical note (900–1400 words) that could train a math-specialist AI.
+    Requirements:
+    - Pick a focused topic in modern mathematics or ML theory tied to the agent objective (no general news).
+    - Include math where helpful (notation/LaTeX snippets) and a short "Method proposal" section that outlines a concrete experiment or training strategy.
+    - Provide 1–3 source URLs at the end under "References".
+    Return JSON per schema: title, author, category, year, text (the full note). Ensure originality and coherence.`;
 
     const out = await withRetry(() => InvokeLLM({
       prompt,
@@ -250,7 +257,85 @@ Keep it concise and high-signal.`;
       summary: `Generated content: ${title}`,
       message: JSON.stringify({ book_id: book.id, title, category, word_count: wc })
     });
-  };
+    await ensureAgentAIAndIndex(agent, book);
+    };
+
+    // helper: ensure a dedicated AI for this agent and index the new book into it
+    const ensureAgentAIAndIndex = async (agent, book) => {
+    // find or create TrainedAI tied to this agent
+    const aiName = `[Agent] ${agent.name}`;
+    let aiList = await TrainedAI.filter({ name: aiName }, "-updated_date", 1);
+    let ai = aiList && aiList[0];
+    if (!ai) {
+      ai = await TrainedAI.create({
+        name: aiName,
+        source_books: [book.id],
+        specialization: "general_mathematics",
+        training_status: "queued",
+        training_progress: 0,
+        use_math_pipeline: true
+      });
+    } else {
+      const books = Array.isArray(ai.source_books) ? ai.source_books : [];
+      if (!books.includes(book.id)) {
+        const updatedBooks = [...books, book.id];
+        await TrainedAI.update(ai.id, { source_books: updatedBooks, training_status: "training" });
+        ai = { ...ai, source_books: updatedBooks };
+      }
+    }
+
+    // create/update job
+    let jobs = await TrainingJob.filter({ ai_id: ai.id }, "-updated_date", 1);
+    let job = jobs && jobs[0];
+    if (!job) {
+      job = await TrainingJob.create({ ai_id: ai.id, status: "indexing", progress: 0, chunk_count: 0 });
+    } else {
+      await TrainingJob.update(job.id, { status: "indexing" });
+    }
+
+    // simple chunker
+    const chunkText = (text, chunkSize = 1500, overlap = 150) => {
+      const out = [];
+      const s = String(text || "");
+      let i = 0;
+      while (i < s.length) {
+        const end = Math.min(i + chunkSize, s.length);
+        out.push(s.slice(i, end));
+        if (end >= s.length) break;
+        i = end - overlap;
+        if (i < 0) i = 0;
+      }
+      return out;
+    };
+
+    const chunks = chunkText(book.extracted_content || "");
+    const records = chunks.map((c, idx) => ({
+      ai_id: ai.id,
+      book_id: book.id,
+      chunk_index: idx,
+      content: c
+    }));
+
+    if (records.length) {
+      if (AIChunk.bulkCreate) {
+        await AIChunk.bulkCreate(records);
+      } else {
+        for (const r of records) { await AIChunk.create(r); }
+      }
+    }
+
+    const newCount = (job?.chunk_count || 0) + records.length;
+    await TrainingJob.update(job.id, { status: "completed", progress: 100, chunk_count: newCount });
+    await TrainedAI.update(ai.id, { training_status: "completed", training_progress: 100 });
+
+    await SiteAgentLog.create({
+      agent_id: agent.id,
+      type: "result",
+      success: true,
+      summary: `Indexed ${records.length} chunks to ${aiName}`,
+      message: JSON.stringify({ ai_id: ai.id, book_id: book.id, chunks: records.length })
+    });
+    };
 
   const [selected, setSelected] = useState(null);
   const [logs, setLogs] = useState([]);
