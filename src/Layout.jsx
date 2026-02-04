@@ -176,7 +176,7 @@ export default function Layout({ children, currentPageName }) {
       <div className="k-vignette" aria-hidden="true" />
 
       <SidebarProvider defaultOpen={true}>
-        <Sidebar collapsible="icon" variant="inset" className="bg-[#0b0c10] text-[#f7f4e8]">
+        <Sidebar collapsible="icon" variant="none" className="bg-[#0b0c10] text-[#f7f4e8]">
           <SidebarHeader className="px-3 py-2">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-md bg-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
@@ -189,7 +189,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Overview</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Dashboard"}>
                     <Link to={createPageUrl("Dashboard")}>
                       <LayoutDashboard />
                       <span>Dashboard</span>
@@ -197,7 +197,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Upload"}>
                     <Link to={createPageUrl("Upload")}>
                       <UploadCloud />
                       <span>Upload</span>
@@ -205,7 +205,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Library"}>
                     <Link to={createPageUrl("Library")}>
                       <BookOpen />
                       <span>Library</span>
@@ -219,7 +219,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>AI</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "AIChat"}>
                     <Link to={createPageUrl("AIChat")}>
                       <MessageSquare />
                       <span>AI Chat</span>
@@ -227,7 +227,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "TrainAI"}>
                     <Link to={createPageUrl("TrainAI")}>
                       <Cpu />
                       <span>Train AI</span>
@@ -235,7 +235,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "ModelStudio"}>
                     <Link to={createPageUrl("ModelStudio")}>
                       <Box />
                       <span>Model Studio</span>
@@ -243,7 +243,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "TrainingMonitor"}>
                     <Link to={createPageUrl("TrainingMonitor")}>
                       <Activity />
                       <span>Training Monitor</span>
@@ -257,7 +257,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Collab</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Agents"}>
                     <Link to={createPageUrl("Agents")}>
                       <Cpu />
                       <span>Agents</span>
@@ -265,7 +265,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "CollabRooms"}>
                     <Link to={createPageUrl("CollabRooms")}>
                       <Users />
                       <span>Collab Rooms</span>
@@ -279,7 +279,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Marketplace</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Marketplace"}>
                     <Link to={createPageUrl("Marketplace")}>
                       <ShoppingBag />
                       <span>Marketplace</span>
@@ -287,7 +287,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "MyAssets"}>
                     <Link to={createPageUrl("MyAssets")}>
                       <Folder />
                       <span>My Assets</span>
@@ -295,7 +295,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "AssetFinder"}>
                     <Link to={createPageUrl("AssetFinder")}>
                       <Search />
                       <span>Asset Finder</span>
@@ -303,7 +303,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "BuyTokens"}>
                     <Link to={createPageUrl("BuyTokens")}>
                       <Coins />
                       <span>Buy Tokens</span>
@@ -317,7 +317,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Tools</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "DocToJSONL"}>
                     <Link to={createPageUrl("DocToJSONL")}>
                       <FileText />
                       <span>Doc to JSONL</span>
@@ -325,7 +325,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Export"}>
                     <Link to={createPageUrl("Export")}>
                       <Download />
                       <span>Export</span>
@@ -333,7 +333,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "ContentViewer"}>
                     <Link to={createPageUrl("ContentViewer")}>
                       <FileText />
                       <span>Content Viewer</span>
@@ -347,7 +347,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Admin</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "SiteManagement"}>
                     <Link to={createPageUrl("SiteManagement")}>
                       <Server />
                       <span>Site Management</span>
@@ -355,7 +355,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Invite"}>
                     <Link to={createPageUrl("Invite")}>
                       <TrendingUp />
                       <span>Invite Users</span>
@@ -369,7 +369,7 @@ export default function Layout({ children, currentPageName }) {
               <SidebarGroupLabel>Other</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "Earnings"}>
                     <Link to={createPageUrl("Earnings")}>
                       <Wallet />
                       <span>Earnings</span>
@@ -377,7 +377,7 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild isActive={currentPageName === "FruitlesBridge"}>
                     <Link to={createPageUrl("FruitlesBridge")}>
                       <LinkIcon />
                       <span>Fruitles Bridge</span>
