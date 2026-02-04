@@ -340,7 +340,7 @@ export default function Layout({ children, currentPageName }) {
               .k-navbtn { overflow: visible; min-height: 44px; }
               .SidebarMenuButton, .SidebarMenuButton a, .SidebarMenuButton span { font-family: var(--font-heading) !important; letter-spacing: 0.08em; text-transform: uppercase; }
             `}</style>
-      <div className="min-h-screen flex w-full" style={{backgroundColor: 'var(--soft-gray)', animation: 'klingon-hum 14s infinite linear'}}>
+      <div className="min-h-screen flex flex-col w-full" style={{backgroundColor: 'var(--soft-gray)', animation: 'klingon-hum 14s infinite linear'}}>
         <div className="klingon-grid"></div>
         <div className="klingon-scanlines"></div>
         <Sidebar className="border-r border-gray-200 k-panel">
@@ -455,27 +455,20 @@ export default function Layout({ children, currentPageName }) {
           </SidebarFooter>
         </Sidebar>
 
-        <SidebarInset className="flex-1 flex flex-col">
-          <header className="bg-white border-b border-gray-200 px-6 py-4 md:hidden shadow-sm k-panel k-angled">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200" />
-              <h1 className="text-xl font-bold" style={{color: 'var(--primary-navy)'}}>MathAI Prep</h1>
-            </div>
-          </header>
+        <main className="flex-1 flex flex-col">
+  {/* Global top-right Buy link */}
+  <div className="hidden md:block">
+    <Link to={createPageUrl("BuyTokens")} className="fixed top-4 right-4 z-40">
+      <Button className="k-navbtn metal-brut k-glow text-white shadow">
+        Buy Fruitles
+      </Button>
+    </Link>
+  </div>
 
-          {/* Global top-right Buy link */}
-          <div className="hidden md:block">
-            <Link to={createPageUrl("BuyTokens")} className="fixed top-4 right-4 z-40">
-              <Button className="k-navbtn metal-brut k-glow text-white shadow">
-                Buy Fruitles
-              </Button>
-            </Link>
-          </div>
-
-          <div className="flex-1 overflow-auto">
-            {children}
-          </div>
-        </SidebarInset>
+  <div className="flex-1 overflow-auto">
+    {children}
+  </div>
+</main>
       </div>
     </SidebarProvider>
   );
