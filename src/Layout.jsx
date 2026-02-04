@@ -49,7 +49,7 @@ export default function Layout({ children, currentPageName }) {
         ["--text-secondary"]: "#C8C2B3", // higher contrast on dark bg
       }}
     >
-      {/* Global Klingon theme + starfield */}
+      {/* Global Klingon theme + starfield with higher contrast typography */}
       <style>{`
         /* shadcn/ui theme tokens (HSL triplets) */
         [data-theme=klingon] {
@@ -58,19 +58,19 @@ export default function Layout({ children, currentPageName }) {
           --muted: 220 16% 12%;
           --muted-foreground: 40 60% 86%;
           --card: 220 17% 11%;
-          --card-foreground: 40 100% 92%;
+          --card-foreground: 40 100% 96%;
           --popover: 220 18% 6%;
-          --popover-foreground: 40 100% 92%;
+          --popover-foreground: 40 100% 96%;
           --border: 220 18% 28%;
           --input: 220 18% 28%;
           --ring: 38 96% 54%; /* brighter amber outline */
           --primary: 38 96% 54%;
           --primary-foreground: 24 100% 10%;
           --secondary: 220 16% 14%;
-          --secondary-foreground: 40 95% 92%;
+          --secondary-foreground: 40 95% 96%;
 
           /* Sidebar tokens used by the sidebar component */
-          --sidebar: 220 17% 9%;
+          --sidebar: 220 17% 11%;
           --sidebar-foreground: 40 100% 96%;
           --sidebar-accent: 38 96% 54%;
           --sidebar-accent-foreground: 24 100% 10%;
@@ -144,12 +144,15 @@ export default function Layout({ children, currentPageName }) {
           letter-spacing: .06em;
           font-weight: 600;
         }
+        /* Active state emphasis */
         [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
           background: hsl(var(--muted));
           border-left: 3px solid hsl(var(--sidebar-accent));
           color: hsl(var(--sidebar-accent));
         }
         [data-theme=klingon] [data-sidebar=menu-button] svg { color: currentColor; }
+
+        /* General typography improvements */
         [data-theme=klingon] h1, [data-theme=klingon] h2, [data-theme=klingon] h3 {
           color: hsl(var(--foreground));
           letter-spacing: .02em;
@@ -157,6 +160,11 @@ export default function Layout({ children, currentPageName }) {
         [data-theme=klingon] p, [data-theme=klingon] .text-muted-foreground {
           color: hsl(var(--muted-foreground));
         }
+        /* Force common light backgrounds to dark in this theme for contrast */
+        [data-theme=klingon] .bg-white { background-color: hsl(var(--card)) !important; }
+        [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
+        [data-theme=klingon] .text-gray-600 { color: hsl(var(--muted-foreground)) !important; }
+        [data-theme=klingon] .text-gray-500 { color: hsl(var(--muted-foreground)) !important; }
       `}</style>
 
       <div className="k-starfield" aria-hidden="true" />
