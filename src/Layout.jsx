@@ -130,32 +130,51 @@ export default function Layout({ children, currentPageName }) {
           color: hsl(var(--foreground));
         }
 
-        /* Sidebar readability + hover */
+        /* Sidebar — Klingon LCARS pads */
         [data-theme=klingon] [data-sidebar=sidebar] {
-          background-color: #0b0c10 !important;
-          color: #f7f4e8 !important;
+          background-color: #0a0b0d !important;
+          color: #f9f5e6 !important;
+        }
+        /* Group label */
+        [data-theme=klingon] [data-sidebar=group-label] {
+          color: #f9dd9b;
+          text-transform: uppercase;
+          letter-spacing: .14em;
+          font-weight: 800;
+          opacity: .95;
+        }
+        /* LCARS pads */
+        [data-theme=klingon] [data-sidebar=menu] { padding-top: 2px; }
+        [data-theme=klingon] [data-sidebar=menu-item] { position: relative; margin: 6px 0; }
+        [data-theme=klingon] [data-sidebar=menu-item]:not(:last-child)::after {
+          content: "";
+          position: absolute; left: 0; right: 0; bottom: -6px; height: 4px;
+          background: #1b1c20; border-radius: 2px;
         }
         [data-theme=klingon] [data-sidebar=menu-button] {
-          color: #f7f4e8;
-          background: transparent;
-        }
-        [data-theme=klingon] [data-sidebar=menu-button]:hover {
-          background: hsl(var(--muted));
-          box-shadow: 0 0 0 1px hsl(var(--sidebar-accent) / 0.8), 0 0 16px rgba(245,158,11,0.25) inset;
-        }
-        [data-theme=klingon] [data-sidebar=group-label] {
-          color: #f2e9c9;
+          color: #f8f6ea;
+          background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+          height: 48px;
+          padding: 0 14px 0 12px;
+          border-radius: 0 14px 14px 0;
           text-transform: uppercase;
-          letter-spacing: .06em;
-          font-weight: 700;
-        }
-        /* Active state emphasis */
-        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
-          background: hsl(var(--muted));
-          border-left: 3px solid hsl(var(--sidebar-accent));
-          color: hsl(var(--sidebar-accent));
+          letter-spacing: .16em;
+          font-weight: 800;
+          box-shadow: inset 0 0 0 1px rgba(245,158,11,0.20);
         }
         [data-theme=klingon] [data-sidebar=menu-button] svg { color: currentColor; }
+        [data-theme=klingon] [data-sidebar=menu-button]:hover {
+          background: linear-gradient(90deg, rgba(245,158,11,0.18), rgba(245,158,11,0.10));
+          color: #ffd9a1;
+          box-shadow: inset 0 0 0 1px rgba(245,158,11,0.45), 0 0 16px rgba(245,158,11,0.18);
+        }
+        /* Active strip + color */
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
+          color: #ffb4a8;
+          background: linear-gradient(90deg, rgba(239,68,68,0.20), rgba(245,158,11,0.16));
+          box-shadow: inset 0 0 0 1px rgba(239,68,68,0.55), 0 0 22px rgba(239,68,68,0.22);
+          border-left: 6px solid #f59e0b;
+        }
 
         /* General typography improvements */
         [data-theme=klingon] h1, [data-theme=klingon] h2, [data-theme=klingon] h3 {
