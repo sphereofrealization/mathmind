@@ -342,7 +342,7 @@ export default function Layout({ children, currentPageName }) {
       <div className="min-h-screen flex w-full" style={{backgroundColor: 'var(--soft-gray)', animation: 'klingon-hum 14s infinite linear'}}>
         <div className="klingon-grid"></div>
         <div className="klingon-scanlines"></div>
-        <Sidebar className="border-r border-gray-200 k-panel k-angled sticky top-0 h-screen">
+        <Sidebar className="border-r border-gray-200 k-panel k-angled">
           <SidebarHeader className="border-b border-gray-200 p-6 k-panel k-angled">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center" 

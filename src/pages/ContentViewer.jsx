@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { MathBook } from '@/entities/MathBook';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +30,7 @@ const categoryColors = {
 
 export default function ContentViewerPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,8 +41,7 @@ export default function ContentViewerPage() {
       const bookId = params.get('id');
 
       if (!bookId) {
-        setError('No book ID provided.');
-        setIsLoading(false);
+        navigate(createPageUrl('Library'), { replace: true });
         return;
       }
 
