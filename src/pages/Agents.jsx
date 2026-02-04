@@ -401,7 +401,7 @@ export default function AgentsPage() {
               <Bot className="w-7 h-7" /> Agents
             </h1>
             <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-              Run continuously looped research, development, and refinement while this page is open. For 24/7 background agents, enable backend functions.
+            Background autonomy available: enable backend functions and schedule the Agent Crawler (every 5 min) to fetch up to 300 pages per run aligned to the agent objective.
             </p>
           </div>
           <Button variant="outline" onClick={load}>
