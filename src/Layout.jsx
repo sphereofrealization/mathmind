@@ -54,10 +54,10 @@ export default function Layout({ children, currentPageName }) {
         /* shadcn/ui theme tokens (HSL triplets) */
         [data-theme=klingon] {
           --background: 220 18% 6%;
-          --foreground: 40 100% 92%;
+          --foreground: 40 100% 96%;
           --muted: 220 16% 12%;
-          --muted-foreground: 40 60% 82%;
-          --card: 220 17% 9%;
+          --muted-foreground: 40 60% 86%;
+          --card: 220 17% 11%;
           --card-foreground: 40 100% 92%;
           --popover: 220 18% 6%;
           --popover-foreground: 40 100% 92%;
@@ -71,7 +71,7 @@ export default function Layout({ children, currentPageName }) {
 
           /* Sidebar tokens used by the sidebar component */
           --sidebar: 220 17% 9%;
-          --sidebar-foreground: 40 100% 92%;
+          --sidebar-foreground: 40 100% 96%;
           --sidebar-accent: 38 96% 54%;
           --sidebar-accent-foreground: 24 100% 10%;
           --sidebar-border: 220 18% 28%;
@@ -88,7 +88,7 @@ export default function Layout({ children, currentPageName }) {
                       radial-gradient(#ffffff06 1px, transparent 1px) 0 0/6px 6px,
                       #07090d;
           animation: k-stars-move 120s linear infinite;
-          opacity: 0.6;
+          opacity: 0.35;
         }
         @keyframes k-stars-move {
           from { background-position: 0 0, 0 0, 0 0; }
@@ -143,6 +143,19 @@ export default function Layout({ children, currentPageName }) {
           text-transform: uppercase;
           letter-spacing: .06em;
           font-weight: 600;
+        }
+        [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
+          background: hsl(var(--muted));
+          border-left: 3px solid hsl(var(--sidebar-accent));
+          color: hsl(var(--sidebar-accent));
+        }
+        [data-theme=klingon] [data-sidebar=menu-button] svg { color: currentColor; }
+        [data-theme=klingon] h1, [data-theme=klingon] h2, [data-theme=klingon] h3 {
+          color: hsl(var(--foreground));
+          letter-spacing: .02em;
+        }
+        [data-theme=klingon] p, [data-theme=klingon] .text-muted-foreground {
+          color: hsl(var(--muted-foreground));
         }
       `}</style>
 
@@ -368,7 +381,7 @@ export default function Layout({ children, currentPageName }) {
         <SidebarInset>
           <div className="k-topbar sticky top-0 z-10 flex h-12 items-center gap-2 border-b bg-background/60 px-3 backdrop-blur-sm">
             <SidebarTrigger />
-            <div className="text-sm text-muted-foreground">{currentPageName}</div>
+            <div className="text-sm text-foreground">{currentPageName}</div>
           </div>
           <div className="p-3 md:p-6">{children}</div>
         </SidebarInset>
