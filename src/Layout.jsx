@@ -43,39 +43,39 @@ export default function Layout({ children, currentPageName }) {
       className="relative min-h-screen overflow-hidden antialiased selection:bg-amber-500/20 selection:text-amber-200"
       style={{
         // Custom app vars used by some pages
-        ["--primary-navy"]: "#0b0e13",
+        ["--primary-navy"]: "#F8E7C7", // warm light for headings
         ["--accent-gold"]: "#f59e0b",
         ["--soft-gray"]: "transparent",
-        ["--text-secondary"]: "#9ca3af",
+        ["--text-secondary"]: "#C8C2B3", // higher contrast on dark bg
       }}
     >
       {/* Global Klingon theme + starfield */}
       <style>{`
         /* shadcn/ui theme tokens (HSL triplets) */
         [data-theme=klingon] {
-          --background: 218 16% 8%;
-          --foreground: 35 20% 88%;
-          --muted: 218 14% 14%;
-          --muted-foreground: 35 12% 70%;
-          --card: 218 14% 10%;
-          --card-foreground: 35 20% 88%;
-          --popover: 218 16% 8%;
-          --popover-foreground: 35 20% 88%;
-          --border: 218 16% 22%;
-          --input: 218 16% 22%;
-          --ring: 38 92% 50%; /* amber glow */
-          --primary: 38 92% 45%;
-          --primary-foreground: 24 100% 12%;
-          --secondary: 218 16% 14%;
-          --secondary-foreground: 35 20% 88%;
+          --background: 220 18% 6%;
+          --foreground: 40 100% 92%;
+          --muted: 220 16% 12%;
+          --muted-foreground: 40 60% 82%;
+          --card: 220 17% 9%;
+          --card-foreground: 40 100% 92%;
+          --popover: 220 18% 6%;
+          --popover-foreground: 40 100% 92%;
+          --border: 220 18% 28%;
+          --input: 220 18% 28%;
+          --ring: 38 96% 54%; /* brighter amber outline */
+          --primary: 38 96% 54%;
+          --primary-foreground: 24 100% 10%;
+          --secondary: 220 16% 14%;
+          --secondary-foreground: 40 95% 92%;
 
           /* Sidebar tokens used by the sidebar component */
-          --sidebar: 218 14% 10%;
-          --sidebar-foreground: 35 20% 88%;
-          --sidebar-accent: 38 92% 45%;
-          --sidebar-accent-foreground: 24 100% 12%;
-          --sidebar-border: 218 16% 22%;
-          --sidebar-ring: 38 92% 50%;
+          --sidebar: 220 17% 9%;
+          --sidebar-foreground: 40 100% 92%;
+          --sidebar-accent: 38 96% 54%;
+          --sidebar-accent-foreground: 24 100% 10%;
+          --sidebar-border: 220 18% 28%;
+          --sidebar-ring: 38 96% 54%;
         }
 
         /* Starfield background (CSS-only) */
@@ -88,7 +88,7 @@ export default function Layout({ children, currentPageName }) {
                       radial-gradient(#ffffff06 1px, transparent 1px) 0 0/6px 6px,
                       #07090d;
           animation: k-stars-move 120s linear infinite;
-          opacity: 0.7;
+          opacity: 0.6;
         }
         @keyframes k-stars-move {
           from { background-position: 0 0, 0 0, 0 0; }
@@ -102,7 +102,7 @@ export default function Layout({ children, currentPageName }) {
           z-index: -1;
           pointer-events: none;
           background:
-            radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.08), transparent 60%),
+            radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.06), transparent 60%),
             radial-gradient(100% 60% at 50% 120%, rgba(0,0,0,0.65), rgba(0,0,0,0.9));
         }
 
@@ -111,30 +111,39 @@ export default function Layout({ children, currentPageName }) {
           background:
             linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.12)) padding-box,
             repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0px, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 3px),
-            linear-gradient(0deg, rgba(255,180,0,0.05), rgba(255,180,0,0));
+            linear-gradient(0deg, rgba(255,180,0,0.04), rgba(255,180,0,0));
           border: 1px solid hsl(var(--border));
           box-shadow:
             inset 0 1px 0 rgba(255,255,255,0.06),
-            0 0 0 1px rgba(0,0,0,0.35),
+            0 0 0 1px rgba(0,0,0,0.45),
             0 10px 30px rgba(0,0,0,0.35);
           backdrop-filter: saturate(1.1) contrast(1.05);
         }
 
-        /* Top bar styling */
+        /* Top bar styling (higher contrast) */
         .k-topbar {
           background:
-            linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.25)),
-            radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.10), transparent 60%),
+            linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.2)),
             hsl(var(--card));
           border-bottom: 1px solid hsl(var(--border));
-          box-shadow: 0 0 0 1px rgba(245,158,11,0.10), 0 8px 24px rgba(0,0,0,0.45);
+          box-shadow: 0 0 0 1px rgba(245,158,11,0.12), 0 8px 24px rgba(0,0,0,0.45);
+          color: hsl(var(--foreground));
         }
 
-        /* Sidebar hover amber glow */
-        [data-theme=klingon] [data-sidebar=menu-button]:hover {
-          box-shadow: 0 0 0 1px hsl(var(--sidebar-accent)), 0 0 14px rgba(245,158,11,0.25) inset;
+        /* Sidebar readability + hover */
+        [data-theme=klingon] [data-sidebar=menu-button] {
+          color: hsl(var(--sidebar-foreground));
         }
-        [data-theme=klingon] [data-sidebar=group-label] { color: hsl(var(--sidebar-foreground) / 0.7); }
+        [data-theme=klingon] [data-sidebar=menu-button]:hover {
+          background: hsl(var(--muted));
+          box-shadow: 0 0 0 1px hsl(var(--sidebar-accent) / 0.8), 0 0 16px rgba(245,158,11,0.25) inset;
+        }
+        [data-theme=klingon] [data-sidebar=group-label] {
+          color: hsl(var(--sidebar-foreground) / 0.82);
+          text-transform: uppercase;
+          letter-spacing: .06em;
+          font-weight: 600;
+        }
       `}</style>
 
       <div className="k-starfield" aria-hidden="true" />
