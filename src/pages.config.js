@@ -69,6 +69,7 @@ import TrainAI from './pages/TrainAI';
 import TrainingMonitor from './pages/TrainingMonitor';
 import Upload from './pages/Upload';
 import CollabRooms from './pages/CollabRooms';
+import Synthesizer from './pages/Synthesizer';
 import __Layout from './Layout.jsx';
 
 
@@ -95,6 +96,7 @@ export const PAGES = {
     "TrainingMonitor": TrainingMonitor,
     "Upload": Upload,
     "CollabRooms": CollabRooms,
+    "Synthesizer": Synthesizer,
 }
 
 export const pagesConfig = {

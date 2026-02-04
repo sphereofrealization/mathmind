@@ -21,7 +21,8 @@ import {
     Link2, // NEW: for On-Chain Bridge
     Search, // NEW: search icon for Asset Finder
     Bot, // NEW: Agents
-    GitBranch // NEW: Collab Rooms
+    GitBranch, // NEW: Collab Rooms
+    Sigma // NEW: Synthesizer
 } from "lucide-react";
 import {
   Sidebar,
