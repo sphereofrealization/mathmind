@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bot, Play, Square, RefreshCw, Globe, Clock, List } from "lucide-react";
+import { MathBook } from "@/entities/MathBook";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
@@ -186,6 +187,68 @@ Keep it concise and high-signal.`;
       success: true,
       summary,
       message: JSON.stringify(res || {})
+    });
+
+    // NEW: generate fresh content and upload as a MathBook (dev_enabled controls this)
+    if (agent.dev_enabled) {
+      await generateAndUploadContent(agent);
+    }
+  };
+
+  // NEW: helper to generate and upload new content as a MathBook
+  const generateAndUploadContent = async (agent) => {
+    const schema = {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        author: { type: "string" },
+        category: { type: "string" },
+        year: { type: "number" },
+        text: { type: "string" }
+      }
+    };
+
+    const prompt = `Research on the open web a compact, original mathematics write-up (800-1500 words).
+- Choose a specific topic aligned with modern math (not generic), include symbols/LaTeX where helpful.
+- Provide a strong title and short author label (e.g., "Autonomous Agent").
+- Return JSON only per schema with fields: title, author, category, year, text.
+- The text must be original (no copy/paste), coherent, technically sound, and self-contained.`;
+
+    const out = await withRetry(() => InvokeLLM({
+      prompt,
+      response_json_schema: schema,
+      add_context_from_internet: true
+    }), 4, 1000);
+
+    const validCategories = new Set(["algebra","calculus","geometry","topology","analysis","number_theory","statistics","probability","discrete_math","linear_algebra","differential_equations","abstract_algebra","mathematical_logic","other"]);
+    const title = (out?.title || `Auto Research Note ${new Date().toLocaleString()}`).slice(0, 180);
+    const author = (out?.author || "Autonomous Agent").slice(0, 120);
+    const cat = String(out?.category || "other").toLowerCase().replace(/\s+/g, "_");
+    const category = validCategories.has(cat) ? cat : "other";
+    const year = typeof out?.year === "number" ? out.year : new Date().getFullYear();
+    const text = String(out?.text || "").trim();
+
+    if (!text) return; // skip if nothing generated
+
+    const wc = text.split(/\s+/).filter(Boolean).length;
+
+    const book = await MathBook.create({
+      title,
+      author,
+      category,
+      extracted_content: text,
+      processed_content: text,
+      processing_status: "completed",
+      word_count: wc,
+      year
+    });
+
+    await SiteAgentLog.create({
+      agent_id: agent.id,
+      type: "action",
+      success: true,
+      summary: `Generated content: ${title}`,
+      message: JSON.stringify({ book_id: book.id, title, category, word_count: wc })
     });
   };
 
