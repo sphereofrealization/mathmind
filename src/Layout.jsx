@@ -83,7 +83,7 @@ const navigationItems = [
     title: "Agents",
     url: createPageUrl("Agents"),
     icon: Bot,
-  }
+  },
   // NEW: FT Backend
   {
     title: "FT Backend",
