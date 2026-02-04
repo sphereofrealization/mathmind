@@ -367,6 +367,7 @@ export default function AgentsPage() {
   const [selected, setSelected] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  const logsRef = useRef(null);
 
   const loadLogs = async (agentId) => {
     setLoadingLogs(true);
@@ -396,6 +397,13 @@ export default function AgentsPage() {
       }
     });
     return unsubscribe;
+  }, [selected?.id]);
+
+  // Auto-scroll logs into view when opened/changed
+  useEffect(() => {
+    if (selected?.id && logsRef.current) {
+      logsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }, [selected?.id]);
 
   useEffect(() => {
@@ -501,7 +509,7 @@ export default function AgentsPage() {
                       <Button className="text-white" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => startLoop(a)}><Play className="w-4 h-4 mr-1" /> Run continuously</Button>
                     )}
                     <Button variant="outline" onClick={() => runOnce(a)}><RefreshCw className="w-4 h-4 mr-1" /> Run once</Button>
-                    <Button variant="outline" onClick={() => { setSelected(a); loadLogs(a.id); }}><List className="w-4 h-4 mr-1" /> View logs</Button>
+                    <Button variant="outline" onClick={() => { setSelected(a); setLoadingLogs(true); loadLogs(a.id); }}><List className="w-4 h-4 mr-1" /> View logs</Button>
                   </div>
                   {a.plan && (
                     <div className="mt-2 p-3 bg-white border rounded">
@@ -517,7 +525,8 @@ export default function AgentsPage() {
 
         {/* Logs drawer-like section */}
         {selected && (
-          <Card className="shadow-lg border-0">
+          <div ref={logsRef}>
+            <Card className="shadow-lg border-0">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span>Logs — {selected.name}</span>
@@ -578,7 +587,8 @@ export default function AgentsPage() {
               )}
             </CardContent>
           </Card>
-        )}
+          </div>
+          )}
       </div>
     </div>
   );
