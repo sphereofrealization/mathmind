@@ -15,6 +15,7 @@ import { InvokeLLM } from "@/integrations/Core";
 import { AIAsset } from '@/entities/AIAsset';
 import { MarketplaceListing } from '@/entities/MarketplaceListing';
 import { User } from '@/entities/User';
+import { rewardIndexing } from '@/components/economy/Economy';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
