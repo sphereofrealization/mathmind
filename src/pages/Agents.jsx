@@ -16,6 +16,7 @@ import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
 import { AIChunk } from "@/entities/AIChunk";
 import { base44 } from "@/api/base44Client";
+import { recordTransfer, rewardIndexing, rewardContentGeneration, SYSTEM_EMAIL } from "@/components/economy/Economy";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
@@ -145,7 +146,16 @@ export default function AgentsPage() {
   };
 
   const runAgentTick = async (agent) => {
-    const schema = {
+            // ECONOMY: charge compute microfee per tick
+            if (agent?.created_by) {
+              await withRetry(() => recordTransfer({
+                from: agent.created_by,
+                to: SYSTEM_EMAIL,
+                amount: 0.15,
+                reason: "compute_tick"
+              }), 3, 600);
+            }
+            const schema = {
       type: "object",
       properties: {
         analysis: { type: "string" },
@@ -212,6 +222,10 @@ export default function AgentsPage() {
         }
       } else if (!didResearch && /(research|literature|survey|review)/.test(text)) {
         const schemaR = { type: 'object', properties: { notes: { type: 'array', items: { type: 'string' } } } };
+        // ECONOMY: extra compute for research
+        if (agent?.created_by) {
+          await withRetry(() => recordTransfer({ from: agent.created_by, to: SYSTEM_EMAIL, amount: 0.05, reason: "compute_research" }), 3, 600);
+        }
         const research = await InvokeLLM({
           prompt: `Do focused math/ML research for: ${agent.objective}. Return 3 concise bullets with URLs.`,
           response_json_schema: schemaR,
@@ -276,6 +290,11 @@ export default function AgentsPage() {
       word_count: wc,
       year
     });
+
+    // ECONOMY: reward content generation
+    if (agent?.created_by) {
+      await withRetry(() => rewardContentGeneration({ agentOwner: agent.created_by, bookId: book.id }), 3, 600);
+    }
 
     await SiteAgentLog.create({
       agent_id: agent.id,
@@ -349,6 +368,14 @@ export default function AgentsPage() {
       } else {
         for (const r of records) { await AIChunk.create(r); }
       }
+      // ECONOMY: reward indexing per batch (aggregate)
+      await withRetry(() => rewardIndexing({
+        agentOwner: agent?.created_by,
+        bookOwner: book?.created_by,
+        chunksCount: records.length,
+        aiId: ai.id,
+        bookId: book.id
+      }), 3, 800);
     }
 
     const newCount = (job?.chunk_count || 0) + records.length;
