@@ -15,7 +15,6 @@ import { MathBook } from "@/entities/MathBook";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
 import { AIChunk } from "@/entities/AIChunk";
-import { base44 } from "@/api/base44Client";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
