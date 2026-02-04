@@ -53,6 +53,7 @@ export default function TrainingMonitorPage() {
   const [rateMessage, setRateMessage] = useState("");
   const retryTimersRef = useRef({});
   const aiCooldownRef = useRef({});
+  const aiBackoffRef = useRef({});
 
   // mint/list editions state
   const [issueCount, setIssueCount] = useState({}); // {aiId: number}
@@ -243,6 +244,8 @@ export default function TrainingMonitorPage() {
         setProcessingAI(null);
         return;
       }
+      // Reset backoff after a successful start
+      aiBackoffRef.current[ai.id] = 60000;
     try {
       // Ensure job exists (resume if exists)
       let jobList = await TrainingJob.filter({ ai_id: ai.id });
@@ -306,7 +309,7 @@ export default function TrainingMonitorPage() {
         notes: null
       });
 
-      const batchBase = 2; // smaller batches reduce 429 risk further to avoid 429s
+      const batchBase = 1; // maximal caution mode to avoid 429s
       for (let bIndex = 0; bIndex < validBooks.length; bIndex++) {
         const book = validBooks[bIndex];
         const chunks = perBookChunks[bIndex];
@@ -515,7 +518,7 @@ Be compact, technical, and specific.`;
               lastAiProgress = prog;
             }
 
-            await sleep(1800);
+            await sleep(2200);
           }
         }
 
@@ -559,13 +562,20 @@ Be compact, technical, and specific.`;
         // Optimistic reflections
         upsertJobLocal(ai.id, { status: isRate ? 'queued' : 'error', last_error: isRate ? null : errStr, notes: isRate ? 'Rate limit hit. Auto-resuming shortly...' : null });
         patchAIStatusLocal(ai.id, { training_status: isRate ? 'training' : 'error' });
-        // Schedule auto-resume when rate-limited
-        if (isRate && !retryTimersRef.current[ai.id]) {
-          const waitMs = 60000 + Math.floor(Math.random() * 15000);
-          retryTimersRef.current[ai.id] = setTimeout(() => {
-            delete retryTimersRef.current[ai.id];
-            buildKnowledgeIndex(ai);
-          }, waitMs);
+        // Schedule auto-resume when rate-limited with exponential backoff
+        if (isRate) {
+          const prev = aiBackoffRef.current[ai.id] || 60000;
+          const next = Math.min(prev * 2, 180000); // cap at 3 minutes
+          aiBackoffRef.current[ai.id] = next;
+          const waitMs = next + Math.floor(Math.random() * 15000);
+          aiCooldownRef.current[ai.id] = Date.now() + waitMs;
+          nextAllowedRef.current = Math.max(nextAllowedRef.current, Date.now() + waitMs);
+          if (!retryTimersRef.current[ai.id]) {
+            retryTimersRef.current[ai.id] = setTimeout(() => {
+              delete retryTimersRef.current[ai.id];
+              buildKnowledgeIndex(ai);
+            }, waitMs);
+          }
         }
       } catch (updateError) {
         console.error("Failed to update job or AI with error status:", updateError);
@@ -856,7 +866,7 @@ Be compact, technical, and specific.`;
                         )}
                         {coolingDown && (
                           <p className="text-sm mt-1" style={{color: 'var(--text-secondary)'}}>
-                            Auto-resume in ~{Math.ceil(cooldownMs / 1000)}s
+                            Cooling down… auto-resume in ~{Math.ceil(cooldownMs / 1000)}s
                           </p>
                         )}
                         {job?.status === 'error' && job?.last_error && (
