@@ -247,13 +247,13 @@ export default function TrainingMonitorPage() {
       // Reset backoff after a successful start
       aiBackoffRef.current[ai.id] = 60000;
     try {
-      // Ensure job exists (resume if exists)
-      let jobList = await TrainingJob.filter({ ai_id: ai.id });
+      // Ensure job exists (resume if exists) with retry/backoff
+      const jobList = await withRetry(() => TrainingJob.filter({ ai_id: ai.id }), 4, 800);
       let job = jobList && jobList[0];
       if (!job) {
-        job = await TrainingJob.create({ ai_id: ai.id, status: 'queued', progress: 0, chunk_count: 0 });
+        job = await withRetry(() => TrainingJob.create({ ai_id: ai.id, status: 'queued', progress: 0, chunk_count: 0 }), 4, 800);
       } else {
-        await withRetry(() => TrainingJob.update(job.id, { status: 'preprocessing', last_error: null }), 3);
+        await withRetry(() => TrainingJob.update(job.id, { status: 'preprocessing', last_error: null }), 4, 800);
       }
       // Optimistic: reflect preprocessing immediately
       upsertJobLocal(ai.id, { status: 'preprocessing', progress: job?.progress || 0, chunk_count: job?.chunk_count || 0, eta_seconds: null, throughput_cpm: null, notes: null });
@@ -264,13 +264,12 @@ export default function TrainingMonitorPage() {
       // Optimistic AI update
       patchAIStatusLocal(ai.id, { training_status: 'training', training_progress: 0 });
 
-      // Load source books
-      const books = await Promise.all(
-        (ai.source_books || []).map(async (bookId) => {
-          const res = await MathBook.filter({ id: bookId });
-          return res && res[0] ? res[0] : null;
-        })
-      );
+      // Load source books (sequential with retry to avoid bursts)
+      const books = [];
+      for (const bookId of (ai.source_books || [])) {
+        const res = await withRetry(() => MathBook.filter({ id: bookId }), 4, 800);
+        books.push(res && res[0] ? res[0] : null);
+      }
       const validBooks = books.filter(Boolean);
       const totalContent = validBooks.map(b => b.extracted_content || '').join('\n');
       const totalTokenEstimate = estimateTokens(totalContent);
@@ -314,8 +313,8 @@ export default function TrainingMonitorPage() {
         const book = validBooks[bIndex];
         const chunks = perBookChunks[bIndex];
 
-        // Resume per book from last chunk_index
-        const lastForBookChunks = await AIChunk.filter({ ai_id: ai.id, book_id: book.id }, '-chunk_index', 1);
+        // Resume per book from last chunk_index (with retry)
+        const lastForBookChunks = await withRetry(() => AIChunk.filter({ ai_id: ai.id, book_id: book.id }, '-chunk_index', 1), 4, 800);
         const startFrom = lastForBookChunks && lastForBookChunks[0] ? (lastForBookChunks[0].chunk_index + 1) : 0;
 
         if (startFrom >= chunks.length) continue;
@@ -429,8 +428,8 @@ export default function TrainingMonitorPage() {
         const perCallChunks = 3;
         const targetBatches = mode === 'exhaustive' ? 36 : mode === 'deep' ? 18 : 8;
 
-        // Get a sample of chunks for analysis (prefer ones with numbers/latex)
-        const allChunks = await AIChunk.filter({ ai_id: ai.id }, '-updated_date', 1000);
+        // Get a sample of chunks for analysis (prefer ones with numbers/latex) with retry
+        const allChunks = await withRetry(() => AIChunk.filter({ ai_id: ai.id }, '-updated_date', 1000), 4, 800);
         const rankForAnalysis = (ch) => {
           let s = 0;
           s += (ch.numbers?.length || 0) * 1.5;
