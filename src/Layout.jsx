@@ -22,7 +22,7 @@ import {
     Search, // NEW: search icon for Asset Finder
     Bot, // NEW: Agents
     GitBranch, // NEW: Collab Rooms
-    Sigma // NEW: Synthesizer
+    Layers // NEW: Synthesizer
 } from "lucide-react";
 import {
   Sidebar,
@@ -90,6 +90,11 @@ const navigationItems = [
     title: "Collab Rooms",
     url: createPageUrl("CollabRooms"),
     icon: GitBranch,
+  },
+  {
+    title: "Synthesizer",
+    url: createPageUrl("Synthesizer"),
+    icon: Layers,
   },
   // NEW: FT Backend
   {
