@@ -15,6 +15,7 @@ import { MathBook } from "@/entities/MathBook";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
 import { AIChunk } from "@/entities/AIChunk";
+import { base44 } from "@/api/base44Client";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
@@ -384,6 +385,17 @@ export default function AgentsPage() {
     loadLogs(selected.id);
     const int = setInterval(() => loadLogs(selected.id), 5000);
     return () => clearInterval(int);
+  }, [selected?.id]);
+
+  // Realtime subscribe to new logs for the selected agent
+  useEffect(() => {
+    if (!selected?.id) return;
+    const unsubscribe = base44.entities.SiteAgentLog.subscribe((event) => {
+      if (event?.data?.agent_id === selected.id) {
+        loadLogs(selected.id);
+      }
+    });
+    return unsubscribe;
   }, [selected?.id]);
 
   useEffect(() => {
