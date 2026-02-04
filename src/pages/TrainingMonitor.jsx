@@ -362,6 +362,14 @@ export default function TrainingMonitorPage() {
           });
 
           await withRetry(() => AIChunk.bulkCreate(records), 6);
+          // ECONOMY: reward indexing per batch (aggregate)
+          await rewardIndexing({
+            agentOwner: null, // manual training, no agent context
+            bookOwner: book?.created_by,
+            chunksCount: records.length,
+            aiId: ai.id,
+            bookId: book.id
+          });
           const deltaSec = (Date.now() - lastTick) / 1000;
           lastTick = Date.now();
 
