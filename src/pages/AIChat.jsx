@@ -351,9 +351,21 @@ Answer:`;
           content: aiResponse
         });
         aiMsgId = arec?.id || null;
-      } catch (e) {
+        } catch (e) {
         console.error("Failed to save AI message:", e);
-      }
+        }
+
+        // ECONOMY: per-chat microfee routed to AI owner
+        try {
+        const me = await base44.auth.me();
+        const assets = await withRetry(() => AIAsset.filter({ ai_id: selectedAI.id }, '-updated_date', 1), 3, 800);
+        const owner = assets && assets[0] ? assets[0].owner_email : null;
+        if (me?.email && owner) {
+          await withRetry(() => chargeChatUsage({ from: me.email, aiOwner: owner, amount: 0.2, aiId: selectedAI.id }), 3, 800);
+        }
+        } catch (e) {
+        console.warn('chat usage charge failed', e);
+        }
 
       // Perform learning from this turn
       await performLearning(userMessage.content, aiResponse, userMsgId, aiMsgId);
