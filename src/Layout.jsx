@@ -263,6 +263,37 @@ export default function Layout({ children, currentPageName }) {
             repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 24px);
           opacity: .06;
         }
+        /* Angular stone/metal buttons (global) */
+        [data-theme=klingon] button:not([data-sidebar=menu-button]) {
+          position: relative;
+          border: 1px solid hsl(var(--border));
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.18)) padding-box,
+            linear-gradient(0deg, rgba(176,111,43,0.16), rgba(176,111,43,0)) padding-box;
+          clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+          box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 0 1px rgba(0,0,0,0.6);
+        }
+        [data-theme=klingon] button:not([data-sidebar=menu-button])::after {
+          content: "";
+          position: absolute; inset: 3px;
+          background: linear-gradient(180deg, #2d2a28, #1f1c1a);
+          border: 1px solid rgba(0,0,0,0.6);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+          clip-path: inherit;
+          z-index: -1;
+        }
+        [data-theme=klingon] button:not([data-sidebar=menu-button]):hover {
+          color: #ffedd5;
+          box-shadow: inset 0 0 0 1px rgba(176,111,43,0.5), 0 0 14px rgba(176,111,43,0.2);
+        }
+
+        /* Crest emblem */
+        .k-crest {
+          background: linear-gradient(145deg, #b06f2b, #5a2b10);
+          border: 1px solid rgba(0,0,0,0.7);
+          clip-path: polygon(2px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 2px 100%, 0 50%);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(0,0,0,0.5);
+        }
       `}</style>
 
       <div className="k-starfield" aria-hidden="true" />
@@ -277,7 +308,7 @@ export default function Layout({ children, currentPageName }) {
         <Sidebar collapsible="icon" variant="none" className="bg-[#0b0c10] text-[#f7f4e8]">
           <SidebarHeader className="px-3 py-2">
             <div className="flex items-center gap-2">
-              <div className="h-7 w-7 rounded-md bg-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
+              <div className="h-7 w-7 k-crest shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
               <span className="text-sm font-semibold tracking-wide">Battle Console</span>
             </div>
           </SidebarHeader>
