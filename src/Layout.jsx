@@ -131,18 +131,23 @@ export default function Layout({ children, currentPageName }) {
         }
 
         /* Sidebar readability + hover */
+        [data-theme=klingon] [data-sidebar=sidebar] {
+          background-color: #0b0c10 !important;
+          color: #f7f4e8 !important;
+        }
         [data-theme=klingon] [data-sidebar=menu-button] {
-          color: hsl(var(--sidebar-foreground));
+          color: #f7f4e8;
+          background: transparent;
         }
         [data-theme=klingon] [data-sidebar=menu-button]:hover {
           background: hsl(var(--muted));
           box-shadow: 0 0 0 1px hsl(var(--sidebar-accent) / 0.8), 0 0 16px rgba(245,158,11,0.25) inset;
         }
         [data-theme=klingon] [data-sidebar=group-label] {
-          color: hsl(var(--sidebar-foreground) / 0.82);
+          color: #f2e9c9;
           text-transform: uppercase;
           letter-spacing: .06em;
-          font-weight: 600;
+          font-weight: 700;
         }
         /* Active state emphasis */
         [data-theme=klingon] [data-sidebar=menu-button][data-active=true] {
@@ -171,7 +176,7 @@ export default function Layout({ children, currentPageName }) {
       <div className="k-vignette" aria-hidden="true" />
 
       <SidebarProvider defaultOpen={true}>
-        <Sidebar collapsible="icon" variant="inset" className="k-metal" >
+        <Sidebar collapsible="icon" variant="inset" className="bg-[#0b0c10] text-[#f7f4e8]">
           <SidebarHeader className="px-3 py-2">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 rounded-md bg-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
