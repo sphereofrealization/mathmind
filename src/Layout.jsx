@@ -245,7 +245,19 @@ export default function Layout({ children, currentPageName }) {
           --text-secondary: #4a3b2b;
         }
         [data-theme=klingon] .bg-card {
+          color: hsl(var(--card-foreground)) !important;
           --text-secondary: #4a3b2b;
+        }
+        /* Improve contrast: avoid gold text on light panels */
+        [data-theme=klingon] .bg-white .text-amber-400,
+        [data-theme=klingon] .bg-white .text-amber-500,
+        [data-theme=klingon] .bg-white .text-yellow-400,
+        [data-theme=klingon] .bg-white .text-yellow-500,
+        [data-theme=klingon] .bg-card .text-amber-400,
+        [data-theme=klingon] .bg-card .text-amber-500,
+        [data-theme=klingon] .bg-card .text-yellow-400,
+        [data-theme=klingon] .bg-card .text-yellow-500 {
+          color: hsl(var(--card-foreground)) !important;
         }
         [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
         /* contrast fix: remove gray-600 override */
@@ -318,7 +330,7 @@ export default function Layout({ children, currentPageName }) {
           <SidebarHeader className="px-3 py-2">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 k-crest shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
-              <span className="text-sm font-semibold tracking-wide">The Formal Authority</span>
+              <span className="text-sm font-semibold tracking-wide">Math in Space</span>
             </div>
           </SidebarHeader>
 
