@@ -186,7 +186,7 @@ export default function MyAssetsPage() {
         </motion.div>
 
         {assets.length === 0 ? (
-          <Card className="shadow-lg border-0 p-8 text-center">
+          <Card className="shadow-lg p-8 text-center">
             <CardContent>
               <Coins className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
               <p style={{ color: 'var(--text-secondary)' }}>No assets yet. Train an AI to mint its asset.</p>
@@ -198,7 +198,7 @@ export default function MyAssetsPage() {
               const ai = aisById[asset.ai_id];
               const listing = activeListings[asset.id];
               return (
-                <Card key={asset.id} className="shadow-lg border-0">
+                <Card key={asset.id} className="shadow-lg">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       <div className="flex items-center gap-3">

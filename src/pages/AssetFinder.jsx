@@ -134,7 +134,7 @@ export default function AssetFinder() {
                     <button
                       key={a.id}
                       onClick={() => selectAsset(a)}
-                      className={`w-full text-left p-4 hover:bg-gray-50 transition ${
+                      className={`w-full text-left p-4 border rounded-lg bg-white mb-2 hover:bg-gray-50 transition ${
                         selected && selected.id === a.id ? "bg-amber-50" : ""
                       }`}
                     >

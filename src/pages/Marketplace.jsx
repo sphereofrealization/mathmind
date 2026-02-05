@@ -274,7 +274,7 @@ export default function MarketplacePage() {
         </motion.div>
 
         {activeListings.length === 0 ? (
-          <Card className="shadow-lg border-0 p-8 text-center">
+          <Card className="shadow-lg p-8 text-center">
             <CardContent>
               <Store className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
               <p style={{ color: 'var(--text-secondary)' }}>No active listings. List one from My Assets.</p>
@@ -289,7 +289,7 @@ export default function MarketplacePage() {
                 const ai = pack.ai;
                 return (
                   <motion.div key={l.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Card className="shadow-lg border-0">
+                    <Card className="shadow-lg">
                       <CardHeader>
                         <CardTitle className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
