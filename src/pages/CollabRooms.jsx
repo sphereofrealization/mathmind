@@ -157,9 +157,9 @@ function BudgetPreview({ agentIds }) {
   useEffect(() => {
     const load = async () => {
       if (!agentIds || agentIds.length === 0) { setRows([]); setRequests([]); return; }
-      const budgets = await base44.entities.AgentBudget.filter({ agent_id: agentIds[0] }, "-updated_date", 10);
+      const budgets = await withRetry(() => base44.entities.AgentBudget.filter({ agent_id: agentIds[0] }, "-updated_date", 10));
       setRows(budgets);
-      const reqs = await base44.entities.BudgetApprovalRequest.filter({ agent_id: agentIds[0] }, "-updated_date", 20);
+      const reqs = await withRetry(() => base44.entities.BudgetApprovalRequest.filter({ agent_id: agentIds[0] }, "-updated_date", 20));
       setRequests(reqs);
     };
     load();
@@ -167,7 +167,7 @@ function BudgetPreview({ agentIds }) {
 
   const requestApproval = async () => {
     if (!agentIds || agentIds.length===0) return;
-    const r = await base44.entities.BudgetApprovalRequest.create({
+    const r = await withRetry(() => base44.entities.BudgetApprovalRequest.create({
       agent_id: agentIds[0],
       amount: Number(amount)||0,
       action_type: 'generic_action',
@@ -175,7 +175,7 @@ function BudgetPreview({ agentIds }) {
       status: 'pending',
       requested_at: new Date().toISOString(),
       reason: 'Manual request from CollabRooms'
-    });
+    }), 3, 600);
     setRequests(prev => [r, ...prev]);
   };
 

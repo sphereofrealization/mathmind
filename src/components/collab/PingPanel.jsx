@@ -52,22 +52,21 @@ const withRetry = async (fn, maxRetries = 3, baseDelay = 700) => {
 
   const saveRatings = async () => {
     for (const r of responses) {
-      const existing = await base44.entities.AIEloScore.filter({ ai_id: r.ai.id, domain }, "-updated_date", 1);
+      const existing = await withRetry(() => base44.entities.AIEloScore.filter({ ai_id: r.ai.id, domain }, "-updated_date", 1), 3, 600);
       const current = existing && existing[0] ? existing[0] : null;
       const rating = current?.rating ?? 1500;
       const K = current?.k_factor ?? 32;
-      // simple delta: rating += K * ( (r.rating-3)/2 )
       const S = (r.rating - 3) / 2; // -1..+1 from 1..5 stars
       const newRating = Math.max(600, Math.min(2800, rating + K * S));
       if (current) {
-        await base44.entities.AIEloScore.update(current.id, {
+        await withRetry(() => base44.entities.AIEloScore.update(current.id, {
           rating: newRating,
           games: (current.games || 0) + 1,
           last_delta: newRating - rating,
           last_update: new Date().toISOString()
-        });
+        }), 3, 600);
       } else {
-        await base44.entities.AIEloScore.create({
+        await withRetry(() => base44.entities.AIEloScore.create({
           ai_id: r.ai.id,
           domain,
           rating: newRating,
@@ -75,10 +74,10 @@ const withRetry = async (fn, maxRetries = 3, baseDelay = 700) => {
           games: 1,
           last_delta: newRating - rating,
           last_update: new Date().toISOString()
-        });
+        }), 3, 600);
       }
+      await sleep(150);
     }
-    // small reset
     setResponses(rs => rs.map(x => ({ ...x, rating: 0 })));
   };
 
