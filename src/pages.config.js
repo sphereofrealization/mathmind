@@ -70,6 +70,7 @@ import Synthesizer from './pages/Synthesizer';
 import TrainAI from './pages/TrainAI';
 import TrainingMonitor from './pages/TrainingMonitor';
 import Upload from './pages/Upload';
+import AgentProfile from './pages/AgentProfile';
 import __Layout from './Layout.jsx';
 
 
@@ -97,6 +98,7 @@ export const PAGES = {
     "TrainAI": TrainAI,
     "TrainingMonitor": TrainingMonitor,
     "Upload": Upload,
+    "AgentProfile": AgentProfile,
 }
 
 export const pagesConfig = {
