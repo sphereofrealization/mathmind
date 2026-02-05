@@ -242,10 +242,14 @@ export default function Layout({ children, currentPageName }) {
           background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,245,220,0.96)) !important;
           color: hsl(var(--card-foreground)) !important;
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+          --text-secondary: #4a3b2b;
+        }
+        [data-theme=klingon] .bg-card {
+          --text-secondary: #4a3b2b;
         }
         [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
-        [data-theme=klingon] .text-gray-600 { color: hsl(var(--muted-foreground)) !important; }
-        [data-theme=klingon] .text-gray-500 { color: hsl(var(--muted-foreground)) !important; }
+        /* contrast fix: remove gray-600 override */
+        /* contrast fix: remove gray-500 override */
         /* Grid overlay */
         .k-grid {
           position: fixed;
