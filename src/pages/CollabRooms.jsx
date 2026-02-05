@@ -76,7 +76,7 @@ export default function CollabRooms() {
   };
 
   const createTask = async (data) => {
-    const t = await base44.entities.CollabTask.create(data);
+    const t = await withRetry(() => base44.entities.CollabTask.create(data));
     setTasks(prev => [t, ...prev]);
   };
 
