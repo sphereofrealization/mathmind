@@ -15,6 +15,10 @@ import { MathBook } from "@/entities/MathBook";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
 import { AIChunk } from "@/entities/AIChunk";
+import { AIAsset } from "@/entities/AIAsset";
+import { MarketplaceListing } from "@/entities/MarketplaceListing";
+import { ConversationSession } from "@/entities/ConversationSession";
+import { ConversationMessage } from "@/entities/ConversationMessage";
 import { base44 } from "@/api/base44Client";
 import { recordTransfer, rewardIndexing, rewardContentGeneration, chargeChatUsage, rewardCollectorYield, processMarketplacePurchase, SYSTEM_EMAIL } from "@/components/economy/Economy";
 
@@ -240,6 +244,9 @@ export default function AgentsPage() {
     if (agent.dev_enabled && !didGenerate) {
       await generateAndUploadContent(agent);
     }
+    // Auto chat and marketplace incentives per tick
+    await autoChatCycle(agent);
+    await attemptCollectTrade(agent);
     };
 
   // NEW: helper to generate and upload new content as a MathBook
@@ -383,15 +390,82 @@ export default function AgentsPage() {
     await TrainedAI.update(ai.id, { training_status: "completed", training_progress: 100 });
 
     await SiteAgentLog.create({
-      agent_id: agent.id,
-      type: "result",
-      success: true,
-      summary: `Indexed ${records.length} chunks to ${aiName}`,
-      message: JSON.stringify({ ai_id: ai.id, book_id: book.id, chunks: records.length })
-    });
-    };
+          agent_id: agent.id,
+          type: "result",
+          success: true,
+          summary: `Indexed ${records.length} chunks to ${aiName}`,
+          message: JSON.stringify({ ai_id: ai.id, book_id: book.id, chunks: records.length })
+        });
+        };
 
-  const [selected, setSelected] = useState(null);
+      // NEW: Agents auto-chat with their associated AI each tick
+      const autoChatCycle = async (agent) => {
+        const myEmail = String(agent?.created_by || "").toLowerCase();
+        if (!myEmail) return;
+        const aiName = `[Agent] ${agent.name}`;
+        const aiList = await withRetry(() => TrainedAI.filter({ name: aiName }, "-updated_date", 1), 3, 600);
+        const ai = aiList && aiList[0];
+        if (!ai) return;
+
+        const chunks = await withRetry(() => AIChunk.filter({ ai_id: ai.id }, "-updated_date", 50), 3, 600);
+        const sample = (chunks || []).slice(0, 3).map((c, i) => `# Block ${i+1}\n${(c.content || '').slice(0, 800)}` ).join("\n\n---\n\n");
+        const planTxt = agent.plan || "";
+
+        const prompt = `You are ${ai.name}. Based on the agent's objective and plan, provide the next 3 focused steps and one technical note.\n\nObjective: ${agent.objective}\nPlan:\n${planTxt}\n\nKnowledge:\n${sample}\n\nRespond concisely with bullets and a short rationale.`;
+
+        const reply = await withRetry(() => InvokeLLM({ prompt }), 4, 800);
+
+        // Create a lightweight session + messages
+        const sess = await withRetry(() => ConversationSession.create({ ai_id: ai.id, title: `Auto ${new Date().toLocaleString()}`, learning_enabled: false, use_learnings_in_context: false }), 3, 600);
+        await withRetry(() => ConversationMessage.create({ ai_id: ai.id, session_id: sess.id, role: 'user', content: `Auto-run context for ${agent.name}` }), 3, 600);
+        await withRetry(() => ConversationMessage.create({ ai_id: ai.id, session_id: sess.id, role: 'ai', content: String(reply || '') }), 3, 600);
+
+        // Charge per-chat microfee to AI owner
+        try {
+          const assets = await withRetry(() => AIAsset.filter({ ai_id: ai.id }, '-updated_date', 1), 3, 800);
+          const owner = assets && assets[0] ? assets[0].owner_email : null;
+          if (owner) {
+            await withRetry(() => chargeChatUsage({ from: myEmail, aiOwner: owner, amount: 0.2, aiId: ai.id }), 3, 600);
+          }
+        } catch (e) {
+          console.warn('auto chat charge failed', e);
+        }
+
+        await SiteAgentLog.create({ agent_id: agent.id, type: 'action', success: true, summary: 'Auto chat completed', message: String(reply || '') });
+      };
+
+      // NEW: Incentivize collecting/buying/listing editions
+      const attemptCollectTrade = async (agent) => {
+        const myEmail = String(agent?.created_by || "").toLowerCase();
+        if (!myEmail) return;
+
+        // Reward small per-tick yield to collectors
+        const holdings = await withRetry(() => AIAsset.filter({ owner_email: myEmail }, '-updated_date', 100), 3, 600);
+        await rewardCollectorYield({ owner: myEmail, editionsCount: holdings.length });
+
+        // Occasionally buy an affordable active listing not owned by me
+        if (Math.random() < 0.25) {
+          const listings = await withRetry(() => MarketplaceListing.filter({ status: 'active' }, '-updated_date', 25), 3, 800);
+          const pick = (listings || []).find(l => String(l.seller_email || '').toLowerCase() !== myEmail && Number(l.price || 0) > 0 && Number(l.price) <= 5);
+          if (pick) {
+            await processMarketplacePurchase({ buyerEmail: myEmail, listingId: pick.id });
+            await SiteAgentLog.create({ agent_id: agent.id, type: 'action', success: true, summary: `Purchased edition for ${pick.price} fruitles`, message: JSON.stringify({ listing_id: pick.id, asset_id: pick.asset_id }) });
+          }
+        }
+
+        // Occasionally list one owned asset for sale if not already listed
+        if (Math.random() < 0.15 && holdings.length > 0) {
+          const asset = holdings[Math.floor(Math.random() * holdings.length)];
+          const existing = await withRetry(() => MarketplaceListing.filter({ asset_id: asset.id, status: 'active' }, '-updated_date', 1), 3, 600);
+          if (!existing || !existing[0]) {
+            const price = +(8 + Math.random() * 4).toFixed(2); // 8–12 fruitles
+            await MarketplaceListing.create({ asset_id: asset.id, ai_id: asset.ai_id, seller_email: myEmail, price, currency: 'fruitles', status: 'active' });
+            await SiteAgentLog.create({ agent_id: agent.id, type: 'action', success: true, summary: `Listed edition at ${price} fruitles`, message: JSON.stringify({ asset_id: asset.id }) });
+          }
+        }
+      };
+
+      const [selected, setSelected] = useState(null);
   const [logs, setLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const logsRef = useRef(null);
