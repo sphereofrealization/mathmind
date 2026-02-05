@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,6 +33,22 @@ const statusColors = {
 };
 
 export default function RecentBooks({ books, isLoading }) {
+  const [icons, setIcons] = useState({});
+  const recentBooks = books.slice(0, 5);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const map = {};
+      for (const b of recentBooks) {
+        try {
+          const arr = await base44.entities.BookAsset.filter({ book_id: b.id }, '-updated_date', 1);
+          if (arr && arr[0]?.icon_url) map[b.id] = arr[0].icon_url;
+        } catch {}
+      }
+      if (!cancelled) setIcons(map);
+    })();
+    return () => { cancelled = true; };
+  }, [books]);
   const recentBooks = books.slice(0, 5);
 
   return (
@@ -79,9 +96,12 @@ export default function RecentBooks({ books, isLoading }) {
                 >
                   <div className="flex items-start gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-16 rounded-lg flex items-center justify-center shadow-sm"
-                           style={{backgroundColor: 'var(--light-gold)'}}>
-                        <BookOpen className="w-6 h-6" style={{color: 'var(--accent-gold)'}} />
+                      <div className="w-12 h-16 rounded-lg flex items-center justify-center shadow-sm" style={{backgroundColor: 'var(--light-gold)'}}>
+                        {icons[book.id] ? (
+                          <img src={icons[book.id]} alt="Book icon" className="w-8 h-8 object-cover rounded" />
+                        ) : (
+                          <BookOpen className="w-6 h-6" style={{color: 'var(--accent-gold)'}} />
+                        )}
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">

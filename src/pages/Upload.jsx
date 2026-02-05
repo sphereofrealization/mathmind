@@ -1,6 +1,7 @@
-
 import React, { useState } from "react";
 import { MathBook } from "@/entities/MathBook";
+import { BookAsset } from "@/entities/BookAsset";
+import { base44 } from "@/api/base44Client";
 import { UploadFile, ExtractDataFromUploadedFile } from "@/integrations/Core";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -165,7 +166,7 @@ export default function UploadPage() {
         setError("Please ensure title, category, and content are present.");
         return;
       }
-      await MathBook.create({
+      const book = await MathBook.create({
         ...bookMetadata,
         file_url: extractedContent.file_url,
         extracted_content: extractedContent.content,
@@ -174,12 +175,37 @@ export default function UploadPage() {
         word_count: extractedContent.word_count
       });
 
+      // Auto-tokenize book with arcane icon
+      try {
+        const me = await base44.auth.me();
+        const owner = (me?.email || '').toLowerCase();
+        const makeSymbol = (t) => {
+          const letters = (t || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+          if (letters.length >= 3) return letters.slice(0, 6);
+          const base = (t || 'BOOK').toUpperCase().replace(/[^A-Z]/g, '');
+          return (base + 'TK').slice(0, 6) || 'BOOKTK';
+        };
+        let icon_url = null;
+        try {
+          const img = await base44.integrations.Core.GenerateImage({
+            prompt: `arcane grimoire emblem icon, embossed leather, gilded edges, mystical sigils, 2D flat icon, centered, no text, for book ${book.title}`
+          });
+          icon_url = img?.url || null;
+        } catch {}
+        await BookAsset.create({
+          book_id: book.id,
+          name: book.title,
+          symbol: makeSymbol(book.title),
+          owner_email: owner,
+          transferable: true,
+          total_supply: 1,
+          royalty_bps: 0,
+          ...(icon_url ? { icon_url } : {})
+        });
+      } catch {}
+
       setCurrentStep('completed');
-      
-      // Redirect after a delay
-      setTimeout(() => {
-        navigate(createPageUrl("Dashboard"));
-      }, 2000);
+      setTimeout(() => { navigate(createPageUrl("Dashboard")); }, 2000);
     } catch (error) {
       setError("Error saving book. Please try again.");
       console.error("Save book error:", error);
@@ -233,33 +259,53 @@ export default function UploadPage() {
       setError("Please select a category for all books.");
       return;
     }
-    setError(null); // Clear previous errors
+    setError(null);
     try {
-      const payload = batchProcessed.map(item => ({
-        title: item.title,
-        author: batchMetadata.author || '',
-        category: batchMetadata.category,
-        subcategory: batchMetadata.subcategory || '',
-        file_url: item.file_url,
-        extracted_content: item.content,
-        processing_status: 'completed',
-        page_count: item.page_count,
-        word_count: item.word_count,
-        difficulty_level: batchMetadata.difficulty_level || ''
-      }));
-
-      if (MathBook.bulkCreate) {
-        await MathBook.bulkCreate(payload);
-      } else {
-        // Fallback for when bulkCreate is not available
-        for (const p of payload) {
-          await MathBook.create(p);
-        }
+      for (const item of batchProcessed) {
+        const p = {
+          title: item.title,
+          author: batchMetadata.author || '',
+          category: batchMetadata.category,
+          subcategory: batchMetadata.subcategory || '',
+          file_url: item.file_url,
+          extracted_content: item.content,
+          processing_status: 'completed',
+          page_count: item.page_count,
+          word_count: item.word_count,
+          difficulty_level: batchMetadata.difficulty_level || ''
+        };
+        const book = await MathBook.create(p);
+        // Tokenize each with icon
+        try {
+          const me = await base44.auth.me();
+          const owner = (me?.email || '').toLowerCase();
+          const makeSymbol = (t) => {
+            const letters = (t || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (letters.length >= 3) return letters.slice(0, 6);
+            const base = (t || 'BOOK').toUpperCase().replace(/[^A-Z]/g, '');
+            return (base + 'TK').slice(0, 6) || 'BOOKTK';
+          };
+          let icon_url = null;
+          try {
+            const img = await base44.integrations.Core.GenerateImage({
+              prompt: `arcane grimoire emblem icon, embossed leather, gilded edges, mystical sigils, 2D flat icon, centered, no text, for book ${book.title}`
+            });
+            icon_url = img?.url || null;
+          } catch {}
+          await BookAsset.create({
+            book_id: book.id,
+            name: book.title,
+            symbol: makeSymbol(book.title),
+            owner_email: owner,
+            transferable: true,
+            total_supply: 1,
+            royalty_bps: 0,
+            ...(icon_url ? { icon_url } : {})
+          });
+        } catch {}
       }
       setBatchStep('completed');
-      setTimeout(() => {
-        navigate(createPageUrl("Dashboard"));
-      }, 2000);
+      setTimeout(() => { navigate(createPageUrl("Dashboard")); }, 2000);
     } catch (error) {
       setError("Error saving batch books. Please try again.");
       console.error("Batch save error:", error);
