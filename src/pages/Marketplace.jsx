@@ -381,60 +381,182 @@ export default function MarketplacePage() {
           </p>
         </motion.div>
 
-        {activeListings.length === 0 ? (
-          <Card className="shadow-lg p-8 text-center">
-            <CardContent>
-              <Store className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
-              <p style={{ color: 'var(--text-secondary)' }}>No active listings. List one from My Assets.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <AnimatePresence>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {activeListings.map((l, i) => {
-                const pack = meta[l.id] || {};
-                const asset = pack.asset;
-                const ai = pack.ai;
-                return (
-                  <motion.div key={l.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <Card className="shadow-lg">
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <AssetAvatar type="ai" iconUrl={asset?.icon_url} entityType="AIAsset" entityId={asset?.id} seed={asset?.symbol || asset?.id} size={40} />
-                            <span>{asset?.name || 'AI Asset'}</span>
-                          </div>
-                          <Badge variant="outline">{asset?.symbol}</Badge>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3">
-                        <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                          <p>Seller: {l.seller_email}</p>
-                          <p>Price: <b>{l.price}</b> fruitles</p>
-                        </div>
-                        {ai && (
-                          <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                            <p>Specialization: {ai.specialization.replace(/_/g, ' ')}</p>
-                            <p>Status: {ai.training_status.replace(/_/g, ' ')}</p>
-                          </div>
-                        )}
-                        <div className="flex gap-2">
-                          {(asset?.owner_email || "").toLowerCase() === (me?.email || "").toLowerCase() ? (
-                            <Button variant="outline" onClick={() => handleCancel(l)}>Cancel</Button>
-                          ) : (
-                            <Button className="text-white gap-2" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => handleBuy(l)}>
-                              <ShoppingCart className="w-4 h-4" /> Buy
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </AnimatePresence>
-        )}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-4">
+            <TabsTrigger value="ai">AI</TabsTrigger>
+            <TabsTrigger value="books">Books</TabsTrigger>
+            <TabsTrigger value="agents">Agents</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="ai">
+            {activeListings.length === 0 ? (
+              <Card className="shadow-lg p-8 text-center">
+                <CardContent>
+                  <Store className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
+                  <p style={{ color: 'var(--text-secondary)' }}>No AI listings. List one from My Assets.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <AnimatePresence>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {activeListings.map((l, i) => {
+                    const pack = meta[l.id] || {};
+                    const asset = pack.asset;
+                    const ai = pack.ai;
+                    return (
+                      <motion.div key={l.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                        <Card className="shadow-lg">
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <AssetAvatar type="ai" iconUrl={asset?.icon_url} entityType="AIAsset" entityId={asset?.id} seed={asset?.symbol || asset?.id} size={40} />
+                                <span>{asset?.name || 'AI Asset'}</span>
+                              </div>
+                              <Badge variant="outline">{asset?.symbol}</Badge>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <p>Seller: {l.seller_email}</p>
+                              <p>Price: <b>{l.price}</b> fruitles</p>
+                            </div>
+                            {ai && (
+                              <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                <p>Specialization: {ai.specialization.replace(/_/g, ' ')}</p>
+                                <p>Status: {ai.training_status.replace(/_/g, ' ')}</p>
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              {(asset?.owner_email || "").toLowerCase() === (me?.email || "").toLowerCase() ? (
+                                <Button variant="outline" onClick={() => handleCancel(l)}>Cancel</Button>
+                              ) : (
+                                <Button className="text-white gap-2" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => handleBuy(l)}>
+                                  <ShoppingCart className="w-4 h-4" /> Buy
+                                </Button>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </AnimatePresence>
+            )}
+          </TabsContent>
+
+          <TabsContent value="books">
+            {bookListings.length === 0 ? (
+              <Card className="shadow-lg p-8 text-center">
+                <CardContent>
+                  <Store className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
+                  <p style={{ color: 'var(--text-secondary)' }}>No Book listings. Tokenize and list books from My Assets.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <AnimatePresence>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {bookListings.map((l, i) => {
+                    const pack = bookMeta[l.id] || {};
+                    const asset = pack.asset;
+                    const book = pack.book;
+                    return (
+                      <motion.div key={l.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                        <Card className="shadow-lg">
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <AssetAvatar type="book" iconUrl={asset?.icon_url} entityType="BookAsset" entityId={asset?.id} seed={asset?.symbol || asset?.id} size={40} />
+                                <span>{asset?.name || book?.title || 'Book'}</span>
+                              </div>
+                              <Badge variant="outline">{asset?.symbol}</Badge>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <p>Seller: {l.seller_email}</p>
+                              <p>Price: <b>{l.price}</b> fruitles</p>
+                            </div>
+                            {book && (
+                              <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                <p>Title: {book.title}</p>
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              {(asset?.owner_email || "").toLowerCase() === (me?.email || "").toLowerCase() ? (
+                                <Button variant="outline" onClick={() => handleCancelBook(l)}>Cancel</Button>
+                              ) : (
+                                <Button className="text-white gap-2" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => handleBuyBook(l)}>
+                                  <ShoppingCart className="w-4 h-4" /> Buy
+                                </Button>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </AnimatePresence>
+            )}
+          </TabsContent>
+
+          <TabsContent value="agents">
+            {agentListings.length === 0 ? (
+              <Card className="shadow-lg p-8 text-center">
+                <CardContent>
+                  <Store className="w-12 h-12 mx-auto mb-3" style={{ color: 'var(--accent-gold)' }} />
+                  <p style={{ color: 'var(--text-secondary)' }}>No Agent listings yet.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <AnimatePresence>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {agentListings.map((l, i) => {
+                    const pack = agentMeta[l.id] || {};
+                    const asset = pack.asset;
+                    const agent = pack.agent;
+                    return (
+                      <motion.div key={l.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                        <Card className="shadow-lg">
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <AssetAvatar type="agent" iconUrl={asset?.icon_url} entityType="AgentAsset" entityId={asset?.id} seed={asset?.symbol || asset?.id} size={40} />
+                                <span>{asset?.name || agent?.name || 'Agent'}</span>
+                              </div>
+                              <Badge variant="outline">{asset?.symbol}</Badge>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <p>Seller: {l.seller_email}</p>
+                              <p>Price: <b>{l.price}</b> fruitles</p>
+                            </div>
+                            {agent && (
+                              <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                <p>Objective: {agent.objective}</p>
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              {(asset?.owner_email || "").toLowerCase() === (me?.email || "").toLowerCase() ? (
+                                <Button variant="outline" onClick={() => handleCancelAgent(l)}>Cancel</Button>
+                              ) : (
+                                <Button className="text-white gap-2" style={{ backgroundColor: 'var(--accent-gold)' }} onClick={() => handleBuyAgent(l)}>
+                                  <ShoppingCart className="w-4 h-4" /> Buy
+                                </Button>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </AnimatePresence>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
