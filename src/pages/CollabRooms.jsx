@@ -20,15 +20,29 @@ export default function CollabRooms() {
   const [ais, setAis] = useState([]);
   const [agents, setAgents] = useState([]);
 
+  const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+  const withRetry = async (fn, maxRetries = 3, baseDelay = 600) => {
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try { return await fn(); }
+      catch (e) {
+        const msg = String(e || '');
+        const is429 = msg.includes('429') || msg.toLowerCase().includes('rate');
+        if (!is429 || attempt === maxRetries) throw e;
+        const delay = baseDelay * Math.pow(2, attempt);
+        await sleep(delay);
+      }
+    }
+  };
+
   const load = async () => {
-    const rs = await base44.entities.CollabRoom.list("-updated_date", 50);
+    const rs = await withRetry(() => base44.entities.CollabRoom.list("-updated_date", 50));
     setRooms(rs);
     if (selected) {
-      const ts = await base44.entities.CollabTask.filter({ room_id: selected.id }, "-updated_date", 200);
+      const ts = await withRetry(() => base44.entities.CollabTask.filter({ room_id: selected.id }, "-updated_date", 200));
       setTasks(ts);
-      const aiList = selected.ai_ids?.length ? await base44.entities.TrainedAI.filter({ id: selected.ai_ids[0] }, "-updated_date", 50) : await base44.entities.TrainedAI.list("-updated_date", 50);
+      const aiList = selected.ai_ids?.length ? await withRetry(() => base44.entities.TrainedAI.filter({ id: selected.ai_ids[0] }, "-updated_date", 50)) : await withRetry(() => base44.entities.TrainedAI.list("-updated_date", 50));
       setAis(aiList);
-      const agList = selected.agent_ids?.length ? await base44.entities.SiteAgent.filter({ id: selected.agent_ids[0] }, "-updated_date", 50) : await base44.entities.SiteAgent.list("-updated_date", 50);
+      const agList = selected.agent_ids?.length ? await withRetry(() => base44.entities.SiteAgent.filter({ id: selected.agent_ids[0] }, "-updated_date", 50)) : await withRetry(() => base44.entities.SiteAgent.list("-updated_date", 50));
       setAgents(agList);
     }
   };
