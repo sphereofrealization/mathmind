@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { MathBook } from "@/entities/MathBook";
 import { Button } from "@/components/ui/button";
@@ -48,8 +47,8 @@ export default function Dashboard() {
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
         >
           <div>
-            <h1 className="text-4xl font-bold mb-2" style={{color: 'var(--primary-navy)'}}>
-              Mathematics AI Preparation Hub
+            <h1 className="text-4xl font-extrabold mb-2 tracking-wide" style={{color: 'var(--primary-navy)'}}>
+              The Formal Authority
             </h1>
             <p className="text-lg" style={{color: 'var(--text-secondary)'}}>
               Transform your mathematics content into an intelligent knowledge base

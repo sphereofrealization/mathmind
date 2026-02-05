@@ -53,29 +53,29 @@ export default function Layout({ children, currentPageName }) {
       <style>{`
         /* shadcn/ui theme tokens (HSL triplets) */
         [data-theme=klingon] {
-          --background: 20 22% 6%;
-          --foreground: 35 85% 92%;
-          --muted: 20 18% 12%;
-          --muted-foreground: 35 45% 78%;
-          --card: 18 20% 10%;
-          --card-foreground: 35 85% 92%;
-          --popover: 20 22% 6%;
-          --popover-foreground: 35 85% 92%;
-          --border: 18 22% 28%;
-          --input: 18 22% 28%;
-          --ring: 0 78% 46%;
-          --primary: 20 60% 42%;
+          --background: 24 16% 7%;
+          --foreground: 40 90% 92%;
+          --muted: 24 18% 12%;
+          --muted-foreground: 40 35% 78%;
+          --card: 40 30% 88%;
+          --card-foreground: 30 30% 18%;
+          --popover: 24 16% 7%;
+          --popover-foreground: 40 90% 92%;
+          --border: 30 22% 32%;
+          --input: 30 22% 32%;
+          --ring: 38 78% 46%;
+          --primary: 38 65% 45%;
           --primary-foreground: 24 100% 10%;
-          --secondary: 18 18% 14%;
+          --secondary: 30 20% 16%;
           --secondary-foreground: 40 95% 96%;
 
           /* Sidebar tokens used by the sidebar component */
-          --sidebar: 18 20% 10%;
-          --sidebar-foreground: 35 85% 92%;
-          --sidebar-accent: 20 60% 42%;
+          --sidebar: 24 18% 10%;
+          --sidebar-foreground: 40 85% 92%;
+          --sidebar-accent: 38 60% 42%;
           --sidebar-accent-foreground: 24 100% 10%;
-          --sidebar-border: 18 22% 28%;
-          --sidebar-ring: 0 78% 46%;
+          --sidebar-border: 24 22% 26%;
+          --sidebar-ring: 38 78% 46%;
         }
 
         /* Starfield background (CSS-only) */
@@ -83,12 +83,12 @@ export default function Layout({ children, currentPageName }) {
           position: fixed;
           inset: 0;
           z-index: -2;
-          background: radial-gradient(#ffffff10 1px, transparent 1px) 0 0/3px 3px,
-                      radial-gradient(#ffffff08 1px, transparent 1px) 1.5px 1.5px/4px 4px,
-                      radial-gradient(#ffffff06 1px, transparent 1px) 0 0/6px 6px,
-                      #07090d;
-          animation: k-stars-move 120s linear infinite;
-          opacity: 0.35;
+          background:
+            radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.06), transparent 60%),
+            repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px),
+            repeating-linear-gradient(90deg, rgba(0,0,0,0.35) 0, rgba(0,0,0,0.35) 1px, transparent 1px, transparent 24px),
+            linear-gradient(180deg, #0e0d0c, #1a1714);
+          opacity: 0.85;
         }
         @keyframes k-stars-move {
           from { background-position: 0 0, 0 0, 0 0; }
@@ -102,8 +102,9 @@ export default function Layout({ children, currentPageName }) {
           z-index: -1;
           pointer-events: none;
           background:
-            radial-gradient(120% 80% at 50% -20%, rgba(245,158,11,0.06), transparent 60%),
-            radial-gradient(100% 60% at 50% 120%, rgba(0,0,0,0.65), rgba(0,0,0,0.9));
+            radial-gradient(60% 40% at 10% 10%, rgba(245,158,11,0.08), transparent 60%),
+            radial-gradient(60% 40% at 90% 15%, rgba(245,158,11,0.06), transparent 60%),
+            radial-gradient(100% 60% at 50% 120%, rgba(0,0,0,0.75), rgba(0,0,0,0.92));
         }
         /* Scanlines overlay */
         .k-scanlines {
@@ -153,13 +154,13 @@ export default function Layout({ children, currentPageName }) {
             conic-gradient(from -15deg at 60% 70%, rgba(255,255,255,0.04) 2deg, transparent 6deg) 0 0/160px 160px;
         }
 
-        /* Top bar styling (higher contrast) */
+        /* Top bar styling (leather strap with brass trim) */
         .k-topbar {
           background:
-            linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.2)),
-            hsl(var(--card));
+            linear-gradient(180deg, rgba(120,77,28,0.25), rgba(30,24,18,0.8)),
+            hsl(var(--secondary));
           border-bottom: 1px solid hsl(var(--border));
-          box-shadow: 0 0 0 1px rgba(245,158,11,0.12), 0 8px 24px rgba(0,0,0,0.45);
+          box-shadow: 0 0 0 1px rgba(120,77,28,0.35), 0 8px 24px rgba(0,0,0,0.55);
           color: hsl(var(--foreground));
           position: relative;
         }
@@ -168,8 +169,8 @@ export default function Layout({ children, currentPageName }) {
           position: absolute;
           left: 0; right: 0; top: 0;
           height: 3px;
-          background: linear-gradient(90deg, rgba(239,68,68,0.85), rgba(245,158,11,0.85));
-          box-shadow: 0 0 12px rgba(239,68,68,0.5);
+          background: linear-gradient(90deg, rgba(212,163,21,0.95), rgba(139,26,26,0.85));
+          box-shadow: 0 0 12px rgba(212,163,21,0.45);
         }
 
         /* Sidebar — Klingon armor plates */
@@ -237,7 +238,11 @@ export default function Layout({ children, currentPageName }) {
           color: hsl(var(--muted-foreground));
         }
         /* Force common light backgrounds to dark in this theme for contrast */
-        [data-theme=klingon] .bg-white { background-color: hsl(var(--card)) !important; }
+        [data-theme=klingon] .bg-white { 
+          background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,245,220,0.96)) !important;
+          color: hsl(var(--card-foreground)) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+        }
         [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
         [data-theme=klingon] .text-gray-600 { color: hsl(var(--muted-foreground)) !important; }
         [data-theme=klingon] .text-gray-500 { color: hsl(var(--muted-foreground)) !important; }
@@ -309,7 +314,7 @@ export default function Layout({ children, currentPageName }) {
           <SidebarHeader className="px-3 py-2">
             <div className="flex items-center gap-2">
               <div className="h-7 w-7 k-crest shadow-[0_0_18px_rgba(245,158,11,0.35)]" />
-              <span className="text-sm font-semibold tracking-wide">Battle Console</span>
+              <span className="text-sm font-semibold tracking-wide">The Formal Authority</span>
             </div>
           </SidebarHeader>
 
