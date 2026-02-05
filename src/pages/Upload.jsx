@@ -187,8 +187,9 @@ export default function UploadPage() {
         };
         let icon_url = null;
         try {
+          const seed = Array.from(String(book.title || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
           const img = await base44.integrations.Core.GenerateImage({
-            prompt: `arcane grimoire emblem icon, embossed leather, gilded edges, mystical sigils, 2D flat icon, centered, no text, for book ${book.title}`
+            prompt: `Pixel art 16/32-bit RPG tome icon, crisp pixel edges, transparent background, centered, no text, vivid accents. Seed: ${seed}. Title: ${book.title}`
           });
           icon_url = img?.url || null;
         } catch {}
@@ -287,8 +288,9 @@ export default function UploadPage() {
           };
           let icon_url = null;
           try {
+            const seed = Array.from(String(book.title || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
             const img = await base44.integrations.Core.GenerateImage({
-              prompt: `arcane grimoire emblem icon, embossed leather, gilded edges, mystical sigils, 2D flat icon, centered, no text, for book ${book.title}`
+              prompt: `Pixel art 16/32-bit RPG tome icon, crisp pixel edges, transparent background, centered, no text, vivid accents. Seed: ${seed}. Title: ${book.title}`
             });
             icon_url = img?.url || null;
           } catch {}
