@@ -420,6 +420,14 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={currentPageName === "AgentProfile"}>
+                    <Link to={createPageUrl("AgentProfile?id=")}> 
+                      <Cpu />
+                      <span>Agent Profile</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
                   <SidebarMenuButton asChild isActive={currentPageName === "CollabRooms"}>
                     <Link to={createPageUrl("CollabRooms")}>
                       <Users />
