@@ -19,11 +19,16 @@ export async function chargeCompute({ from, amount = 0.15, action = "tick", aiId
   return recordTransfer({ from, to: SYSTEM_EMAIL, amount, reason: `compute_${action}`, refs: aiId ? { ai_id: aiId } : {} });
 }
 
-export async function rewardContentGeneration({ agentOwner, bookId }) {
-  return recordTransfer({ from: SYSTEM_EMAIL, to: agentOwner, amount: 0.5, reason: "content_generation_bonus", refs: bookId ? { asset_id: null, ai_id: null } : {} });
+export async function rewardContentGeneration({ agentOwner, agentId = null, bookId = null }) {
+  const amt = 0.5;
+  const refs = bookId ? { book_id: bookId } : {};
+  if (agentId) {
+    return accrueAgent({ agentId, ownerEmail: agentOwner, amount: amt, reason: "content_generation_bonus", refs });
+  }
+  return recordTransfer({ from: SYSTEM_EMAIL, to: agentOwner, amount: amt, reason: "content_generation_bonus", refs });
 }
 
-export async function rewardIndexing({ agentOwner, bookOwner, chunksCount = 0, aiId = null, bookId = null }) {
+export async function rewardIndexing({ agentOwner, agentId = null, bookOwner, chunksCount = 0, aiId = null, bookId = null }) {
   const n = Number(chunksCount || 0);
   if (n <= 0) return null;
   const perChunkAgent = 0.01;
@@ -34,7 +39,11 @@ export async function rewardIndexing({ agentOwner, bookOwner, chunksCount = 0, a
   if (aiId) refs.ai_id = aiId;
   if (bookId) refs.book_id = bookId;
   const ops = [];
-  if (agentOwner && agentAmt > 0) ops.push(recordTransfer({ from: SYSTEM_EMAIL, to: agentOwner, amount: agentAmt, reason: "indexing_reward", refs }));
+  if (agentId && agentAmt > 0) {
+    ops.push(accrueAgent({ agentId, ownerEmail: agentOwner, amount: agentAmt, reason: "indexing_reward", refs }));
+  } else if (agentOwner && agentAmt > 0) {
+    ops.push(recordTransfer({ from: SYSTEM_EMAIL, to: agentOwner, amount: agentAmt, reason: "indexing_reward", refs }));
+  }
   if (bookOwner && licenseAmt > 0) ops.push(recordTransfer({ from: SYSTEM_EMAIL, to: bookOwner, amount: licenseAmt, reason: "data_licensing_fee", refs }));
   return Promise.all(ops);
 }

@@ -20,7 +20,7 @@ import { MarketplaceListing } from "@/entities/MarketplaceListing";
 import { ConversationSession } from "@/entities/ConversationSession";
 import { ConversationMessage } from "@/entities/ConversationMessage";
 import { base44 } from "@/api/base44Client";
-import { recordTransfer, rewardIndexing, rewardContentGeneration, chargeChatUsage, rewardCollectorYield, processMarketplacePurchase, SYSTEM_EMAIL } from "@/components/economy/Economy";
+import { recordTransfer, rewardIndexing, rewardContentGeneration, chargeChatUsage, rewardCollectorYield, processMarketplacePurchase, harvestAgent, SYSTEM_EMAIL } from "@/components/economy/Economy";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {
@@ -50,6 +50,7 @@ export default function AgentsPage() {
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [wallets, setWallets] = useState({});
 
   // form state
   const [name, setName] = useState("");
@@ -69,6 +70,14 @@ export default function AgentsPage() {
     try {
       const list = await withRetry(() => SiteAgent.list("-updated_date", 100), 3, 800);
       setAgents(list);
+      // Load agent wallets
+      try {
+        const W = base44.entities.AgentWallet;
+        const wl = W.list ? await W.list("-updated_date", 500) : await W.filter({}, "-updated_date", 500);
+        const m = {};
+        (wl || []).forEach(w => { if (w.agent_id) m[w.agent_id] = w; });
+        setWallets(m);
+      } catch {}
     } finally {
       setLoading(false);
     }
@@ -124,6 +133,11 @@ export default function AgentsPage() {
 
   const runOnce = async (agent) => {
     await runTickGuarded(agent.id, true);
+  };
+
+  const harvest = async (agent) => {
+    await harvestAgent({ agentId: agent.id });
+    await load();
   };
 
   const runTickGuarded = async (agentId, force = false) => {
@@ -300,7 +314,7 @@ export default function AgentsPage() {
 
     // ECONOMY: reward content generation
     if (agent?.created_by) {
-      await withRetry(() => rewardContentGeneration({ agentOwner: agent.created_by, bookId: book.id }), 3, 600);
+      await withRetry(() => rewardContentGeneration({ agentOwner: agent.created_by, agentId: agent.id, bookId: book.id }), 3, 600);
     }
 
     await SiteAgentLog.create({
@@ -378,6 +392,7 @@ export default function AgentsPage() {
       // ECONOMY: reward indexing per batch (aggregate)
       await withRetry(() => rewardIndexing({
         agentOwner: agent?.created_by,
+        agentId: agent.id,
         bookOwner: book?.created_by,
         chunksCount: records.length,
         aiId: ai.id,
@@ -611,6 +626,10 @@ export default function AgentsPage() {
                     )}
                     <Button variant="outline" onClick={() => runOnce(a)}><RefreshCw className="w-4 h-4 mr-1" /> Run once</Button>
                     <Button variant="outline" onClick={() => { setSelected(a); setLoadingLogs(true); loadLogs(a.id); }}><List className="w-4 h-4 mr-1" /> View logs</Button>
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <Badge variant="outline">Wallet: {(Number((wallets[a.id]?.balance || 0))).toFixed(2)} fruitles</Badge>
+                    <Button variant="outline" onClick={() => harvest(a)} disabled={!((wallets[a.id]?.balance || 0) > 0)}>Harvest</Button>
                   </div>
                   {a.plan && (
                     <div className="mt-2 p-3 bg-white border rounded">
