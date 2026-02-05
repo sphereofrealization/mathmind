@@ -44,10 +44,29 @@ export default function AssetAvatar({
   const generate = async () => {
     if (!entityId || !entityType) return;
     setLoading(true);
-    const subject = type === "ai" ? "mystic artifact relic"
-      : type === "book" ? "arcane tome / grimoire"
-      : "forged weapon sigil";
-    const prompt = `Pixel art 16/32-bit RPG icon, crisp edges, transparent background, centered, no text. Subject: ${subject}. Vivid color accents per type. Seed: ${seed32}.`;
+
+    const s = seed32;
+    const palettes = ['crimson', 'emerald', 'sapphire', 'amethyst', 'ivory', 'cobalt', 'vermilion', 'onyx'];
+    const metals = ['gold', 'brass', 'copper', 'iron', 'silver', 'steel', 'bronze', 'obsidian'];
+    const runes = ['arcane runes', 'geometric sigils', 'celestial glyphs', 'eldritch marks', 'alchemical symbols'];
+    const bindings = ['clasp', 'chain', 'belt', 'strap', 'latch', 'lock'];
+
+    const palette = palettes[s % palettes.length];
+    const metal = metals[(s >> 3) % metals.length];
+    const rune = runes[(s >> 6) % runes.length];
+    const binding = bindings[(s >> 9) % bindings.length];
+
+    let subject;
+    if (type === 'book') {
+      subject = `videogame tome of lore, ${palette} leather cover, ${metal} corners and ${binding}, ${rune}`;
+    } else if (type === 'ai') {
+      subject = 'mystic artifact relic, faceted core gem, radiating energy';
+    } else {
+      subject = 'forged weapon sigil, crossed blades, stylized';
+    }
+
+    const prompt = `16/32-bit pixel art icon (SNES/PSX era), crisp pixels, subtle dithering, transparent background, centered, no text. Subject: ${subject}. Variant ${(s % 97) + 1}.`;
+
     try {
       const res = await base44.integrations.Core.GenerateImage({ prompt });
       const newUrl = res.url;

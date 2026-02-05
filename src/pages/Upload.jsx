@@ -187,10 +187,17 @@ export default function UploadPage() {
         };
         let icon_url = null;
         try {
-          const seed = Array.from(String(book.title || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
-          const img = await base44.integrations.Core.GenerateImage({
-            prompt: `Pixel art 16/32-bit RPG tome icon, crisp pixel edges, transparent background, centered, no text, vivid accents. Seed: ${seed}. Title: ${book.title}`
-          });
+          const seed = Array.from(String(book.id || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
+          const palettes = ['crimson','emerald','sapphire','amethyst','ivory','cobalt','vermilion','onyx'];
+          const metals = ['gold','brass','copper','iron','silver','steel','bronze','obsidian'];
+          const runes = ['arcane runes','geometric sigils','celestial glyphs','eldritch marks','alchemical symbols'];
+          const bindings = ['clasp','chain','belt','strap','latch','lock'];
+          const palette = palettes[seed % palettes.length];
+          const metal = metals[(seed >> 3) % metals.length];
+          const rune = runes[(seed >> 6) % runes.length];
+          const binding = bindings[(seed >> 9) % bindings.length];
+          const prompt = `16/32-bit pixel art tome of lore, ${palette} leather cover, ${metal} corners and ${binding}, ${rune}, crisp pixels, transparent background, centered, no text. Variant ${(seed % 97) + 1}.`;
+          const img = await base44.integrations.Core.GenerateImage({ prompt });
           icon_url = img?.url || null;
         } catch {}
         await BookAsset.create({
@@ -288,10 +295,17 @@ export default function UploadPage() {
           };
           let icon_url = null;
           try {
-            const seed = Array.from(String(book.title || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
-            const img = await base44.integrations.Core.GenerateImage({
-              prompt: `Pixel art 16/32-bit RPG tome icon, crisp pixel edges, transparent background, centered, no text, vivid accents. Seed: ${seed}. Title: ${book.title}`
-            });
+            const seed = Array.from(String(book.id || 'BOOK')).reduce((h, c) => (((h << 5) - h) + c.charCodeAt(0)) | 0, 0) >>> 0;
+            const palettes = ['crimson','emerald','sapphire','amethyst','ivory','cobalt','vermilion','onyx'];
+            const metals = ['gold','brass','copper','iron','silver','steel','bronze','obsidian'];
+            const runes = ['arcane runes','geometric sigils','celestial glyphs','eldritch marks','alchemical symbols'];
+            const bindings = ['clasp','chain','belt','strap','latch','lock'];
+            const palette = palettes[seed % palettes.length];
+            const metal = metals[(seed >> 3) % metals.length];
+            const rune = runes[(seed >> 6) % runes.length];
+            const binding = bindings[(seed >> 9) % bindings.length];
+            const prompt = `16/32-bit pixel art tome of lore, ${palette} leather cover, ${metal} corners and ${binding}, ${rune}, crisp pixels, transparent background, centered, no text. Variant ${(seed % 97) + 1}.`;
+            const img = await base44.integrations.Core.GenerateImage({ prompt });
             icon_url = img?.url || null;
           } catch {}
           await BookAsset.create({
