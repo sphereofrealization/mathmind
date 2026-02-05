@@ -24,6 +24,10 @@ export default function MyAssetsPage() {
   const [listPrice, setListPrice] = useState({});
   const [transferTo, setTransferTo] = useState({});
   const [activeListings, setActiveListings] = useState({});
+const [bookAssets, setBookAssets] = useState([]);
+const [bookListings, setBookListings] = useState({});
+const [listPriceBook, setListPriceBook] = useState({});
+const [transferToBook, setTransferToBook] = useState({});
   const [reconciling, setReconciling] = useState(false);
 
   useEffect(() => {
@@ -58,6 +62,20 @@ export default function MyAssetsPage() {
       }
       setAisById(aiMap);
       setActiveListings(listingMap);
+
+      // Load my book assets
+      const b1 = await BookAsset.filter({ owner_email: myEmail }, "-updated_date", 200);
+      const b2 = myEmail !== user.email ? await BookAsset.filter({ owner_email: user.email }, "-updated_date", 200) : [];
+      const recentBooks = await BookAsset.list("-updated_date", 500);
+      const extraBooks = (recentBooks || []).filter(a => ((a.owner_email || "").trim().toLowerCase()) === myEmail);
+      const mergedBooks = [...b1, ...b2, ...extraBooks].reduce((acc, x) => { if (!acc.find(y => y.id === x.id)) acc.push(x); return acc; }, []);
+      setBookAssets(mergedBooks);
+      const blMap = {};
+      for (const a of mergedBooks) {
+        const lst = await BookListing.filter({ asset_id: a.id, status: "active" }, "-created_date", 1);
+        blMap[a.id] = lst && lst[0] ? lst[0] : null;
+      }
+      setBookListings(blMap);
     };
     load();
   }, []);
@@ -92,6 +110,52 @@ export default function MyAssetsPage() {
     if (!listing) return;
     await MarketplaceListing.update(listing.id, { status: "cancelled" });
     setActiveListings(prev => ({ ...prev, [asset.id]: null }));
+  };
+
+  // Book asset actions
+  const handleListBook = async (asset) => {
+    const price = parseFloat(listPriceBook[asset.id]);
+    if (!price || price <= 0) return alert("Enter a valid price.");
+    const myEmail = (me.email || "").toLowerCase();
+    await BookListing.create({
+      asset_id: asset.id,
+      book_id: asset.book_id,
+      seller_email: myEmail,
+      price,
+      currency: "fruitles",
+      status: "active"
+    });
+    const lst = await BookListing.filter({ asset_id: asset.id, status: "active" }, "-created_date", 1);
+    setBookListings(prev => ({ ...prev, [asset.id]: lst && lst[0] ? lst[0] : null }));
+    setListPriceBook(prev => ({ ...prev, [asset.id]: "" }));
+  };
+
+  const handleUnlistBook = async (asset) => {
+    const listing = bookListings[asset.id];
+    if (!listing) return;
+    await BookListing.update(listing.id, { status: "cancelled" });
+    setBookListings(prev => ({ ...prev, [asset.id]: null }));
+  };
+
+  const handleTransferBook = async (asset) => {
+    const myEmail = (me.email || "").toLowerCase();
+    const to = (transferToBook[asset.id] || "").trim().toLowerCase();
+    if (!to) return alert("Enter recipient email.");
+    if (to === myEmail) return alert("Recipient is current owner.");
+    await BookTransfer.create({
+      asset_id: asset.id,
+      book_id: asset.book_id,
+      from_email: myEmail,
+      to_email: to
+    });
+    await BookAsset.update(asset.id, { owner_email: to });
+    const listing = bookListings[asset.id];
+    if (listing && listing.status === "active") {
+      await BookListing.update(listing.id, { status: "cancelled" });
+    }
+    setBookAssets(prev => prev.filter(a => a.id !== asset.id));
+    setBookListings(prev => ({ ...prev, [asset.id]: null }));
+    alert("Transfer completed.");
   };
 
   const handleTransfer = async (asset) => {
@@ -172,7 +236,7 @@ export default function MyAssetsPage() {
            My Assets
           </h1>
           <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
-            Transfer your tokenized AIs or list them on the marketplace.
+            Transfer your tokenized AIs and Books or list them on the marketplace.
           </p>
           <div className="flex justify-end">
             <Button
@@ -277,6 +341,92 @@ export default function MyAssetsPage() {
             })}
           </div>
         )}
+
+        {/* My Book Assets */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold mb-4" style={{ color: 'var(--primary-navy)' }}>My Book Assets</h2>
+          {bookAssets.length === 0 ? (
+            <Card className="shadow-lg p-6 text-center">
+              <CardContent>
+                <p style={{ color: 'var(--text-secondary)' }}>No book assets yet. Upload content to mint a book asset.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {bookAssets.map((asset) => {
+                const listing = bookListings[asset.id];
+                return (
+                  <Card key={asset.id} className="shadow-lg">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <AssetAvatar type="book" iconUrl={asset.icon_url} entityType="BookAsset" entityId={asset.id} seed={asset.symbol || asset.id} size={40} />
+                          <span>{asset.name}</span>
+                        </div>
+                        <Badge variant="outline">{asset.symbol}</Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                        <p>Owner: {asset.owner_email}</p>
+                        <p>Transferable: {asset.transferable ? 'Yes' : 'No'}</p>
+                      </div>
+
+                      {typeof asset.royalty_bps === 'number' && (
+                        <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                          <p>Royalty: {(asset.royalty_bps / 100).toFixed(2)}%</p>
+                        </div>
+                      )}
+
+                      {listing ? (
+                        <div className="border rounded-lg p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium">Listed for sale</span>
+                            <Badge variant="outline">{listing.price} {listing.currency}</Badge>
+                          </div>
+                          <Button variant="outline" size="sm" onClick={() => handleUnlistBook(asset)} className="gap-1">
+                            <X className="w-4 h-4" /> Unlist
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="border rounded-lg p-3 space-y-2">
+                          <Label className="text-sm">List for sale</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              placeholder="Price"
+                              value={listPriceBook[asset.id] || ''}
+                              onChange={(e) => setListPriceBook(prev => ({ ...prev, [asset.id]: e.target.value }))}
+                            />
+                            <Button onClick={() => handleListBook(asset)} className="gap-1 text-white" style={{ backgroundColor: 'var(--accent-gold)' }}>
+                              <Tag className="w-4 h-4" /> List
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="border rounded-lg p-3 space-y-2">
+                        <Label className="text-sm">Transfer to email</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="recipient@example.com"
+                            value={transferToBook[asset.id] || ''}
+                            onChange={(e) => setTransferToBook(prev => ({ ...prev, [asset.id]: e.target.value }))}
+                          />
+                          <Button onClick={() => handleTransferBook(asset)} variant="outline" className="gap-1">
+                            <Send className="w-4 h-4" /> Send
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

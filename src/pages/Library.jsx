@@ -8,6 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { BookOpen, Search, Filter, Tag, User, Calendar } from 'lucide-react';
+import AssetAvatar from "../components/assets/AssetAvatar";
+import { BookAsset } from "@/entities/BookAsset";
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from "date-fns";
 import _ from 'lodash';
@@ -36,12 +38,17 @@ export default function LibraryPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [bookAssetsByBookId, setBookAssetsByBookId] = useState({});
 
   useEffect(() => {
     const loadBooks = async () => {
       setIsLoading(true);
       const fetchedBooks = await MathBook.list('-created_date');
       setBooks(fetchedBooks);
+      const allAssets = await BookAsset.list('-created_date', 500);
+      const map = {};
+      (allAssets || []).forEach(a => { if (a.book_id) map[a.book_id] = a; });
+      setBookAssetsByBookId(map);
       setIsLoading(false);
     };
     loadBooks();
@@ -122,12 +129,18 @@ export default function LibraryPage() {
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
                     <Link to={createPageUrl(`ContentViewer?id=${book.id}`)}>
-                      <Card className="h-full hover:shadow-xl transition-shadow duration-300 border-0">
+                      <Card className="h-full hover:shadow-xl transition-shadow duration-300">
                         <CardContent className="p-6 flex flex-col h-full">
                            <div className="flex-shrink-0 mb-4">
-                             <div className="w-16 h-20 rounded-lg flex items-center justify-center shadow-sm"
-                                  style={{backgroundColor: 'var(--light-gold)'}}>
-                               <BookOpen className="w-8 h-8" style={{color: 'var(--accent-gold)'}} />
+                             <div className="w-16 h-20 rounded-lg flex items-center justify-center bg-white border">
+                               <AssetAvatar
+                                 type="book"
+                                 iconUrl={bookAssetsByBookId[book.id]?.icon_url}
+                                 entityType="BookAsset"
+                                 entityId={bookAssetsByBookId[book.id]?.id}
+                                 seed={book.id}
+                                 size={48}
+                               />
                              </div>
                            </div>
                            <h3 className="text-xl font-semibold mb-2 flex-grow" style={{color: '#000'}}>{book.title}</h3>
