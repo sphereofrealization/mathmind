@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import AssetAvatar from "../components/assets/AssetAvatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Tag, User, Repeat } from "lucide-react";
 import { format } from "date-fns";
@@ -138,13 +139,16 @@ export default function AssetFinder() {
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold" style={{ color: 'var(--primary-navy)' }}>
-                            {a.name}
-                          </div>
-                          <div className="text-xs mt-1 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
-                            <User className="w-3 h-3" />
-                            {a.owner_email}
+                        <div className="flex items-center gap-3">
+                          <AssetAvatar type="ai" iconUrl={a.icon_url} entityType="AIAsset" entityId={a.id} seed={a.symbol || a.id} size={36} />
+                          <div>
+                            <div className="font-semibold" style={{ color: 'var(--primary-navy)' }}>
+                              {a.name}
+                            </div>
+                            <div className="text-xs mt-1 flex items-center gap-2" style={{ color: 'var(--text-secondary)' }}>
+                              <User className="w-3 h-3" />
+                              {a.owner_email}
+                            </div>
                           </div>
                         </div>
                         <Badge variant="outline" className="uppercase">
@@ -178,13 +182,16 @@ export default function AssetFinder() {
               ) : (
                 <>
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div>
-                      <h3 className="text-xl font-semibold" style={{ color: 'var(--primary-navy)' }}>{selected.name}</h3>
-                      <div className="flex items-center gap-3 mt-1">
-                        <Badge variant="outline" className="uppercase">{selected.symbol}</Badge>
-                        <Badge className="bg-amber-100 text-amber-800" variant="outline">
-                          Current owner: {selected.owner_email}
-                        </Badge>
+                    <div className="flex items-center gap-3">
+                      <AssetAvatar type="ai" iconUrl={selected.icon_url} entityType="AIAsset" entityId={selected.id} seed={selected.symbol || selected.id} size={44} />
+                      <div>
+                        <h3 className="text-xl font-semibold" style={{ color: 'var(--primary-navy)' }}>{selected.name}</h3>
+                        <div className="flex items-center gap-3 mt-1">
+                          <Badge variant="outline" className="uppercase">{selected.symbol}</Badge>
+                          <Badge className="bg-amber-100 text-amber-800" variant="outline">
+                            Current owner: {selected.owner_email}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
                     {details.listing ? (

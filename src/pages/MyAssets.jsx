@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { AIAsset } from "@/entities/AIAsset";
 import { TrainedAI } from "@/entities/TrainedAI";
@@ -13,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Coins, Send, Tag, X, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
+import AssetAvatar from "../components/assets/AssetAvatar";
 
 export default function MyAssetsPage() {
   const [me, setMe] = useState(null);
@@ -201,7 +201,10 @@ export default function MyAssetsPage() {
                 <Card key={asset.id} className="shadow-lg border-0">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
-                      <span>{asset.name}</span>
+                      <div className="flex items-center gap-3">
+                        <AssetAvatar type="ai" iconUrl={asset.icon_url} entityType="AIAsset" entityId={asset.id} seed={asset.symbol || asset.id} size={40} />
+                        <span>{asset.name}</span>
+                      </div>
                       <Badge variant="outline">{asset.symbol}</Badge>
                     </CardTitle>
                   </CardHeader>

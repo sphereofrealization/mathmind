@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { MarketplaceListing } from "@/entities/MarketplaceListing";
 import { AIAsset } from "@/entities/AIAsset";
@@ -14,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Store, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import AssetAvatar from "../components/assets/AssetAvatar";
 
 export default function MarketplacePage() {
   const [me, setMe] = useState(null);
@@ -292,7 +292,10 @@ export default function MarketplacePage() {
                     <Card className="shadow-lg border-0">
                       <CardHeader>
                         <CardTitle className="flex items-center justify-between">
-                          <span>{asset?.name || 'AI Asset'}</span>
+                          <div className="flex items-center gap-3">
+                            <AssetAvatar type="ai" iconUrl={asset?.icon_url} entityType="AIAsset" entityId={asset?.id} seed={asset?.symbol || asset?.id} size={40} />
+                            <span>{asset?.name || 'AI Asset'}</span>
+                          </div>
                           <Badge variant="outline">{asset?.symbol}</Badge>
                         </CardTitle>
                       </CardHeader>
