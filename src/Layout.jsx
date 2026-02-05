@@ -428,12 +428,20 @@ export default function Layout({ children, currentPageName }) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={currentPageName === "CollabRooms"}>
-                    <Link to={createPageUrl("CollabRooms")}>
-                      <Users />
-                      <span>Collab Rooms</span>
-                    </Link>
-                  </SidebarMenuButton>
+                <SidebarMenuButton asChild isActive={currentPageName === "CollabRooms"}>
+                  <Link to={createPageUrl("CollabRooms")}>
+                    <Users />
+                    <span>Collab Rooms</span>
+                  </Link>
+                </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={currentPageName === "AutoDev"}>
+                  <Link to={createPageUrl("AutoDev")}>
+                    <Box />
+                    <span>AutoDev</span>
+                  </Link>
+                </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroup>

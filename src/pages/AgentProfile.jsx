@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import AssetAvatar from "../components/assets/AssetAvatar";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { Play, Square, RefreshCw, BookOpen, Cpu, Tag, List, Terminal, Coins } from "lucide-react";
 
 export default function AgentProfile() {
@@ -39,6 +41,8 @@ export default function AgentProfile() {
   const [selectedAssetId, setSelectedAssetId] = useState("");
   const [selectedAssetType, setSelectedAssetType] = useState("book"); // 'book' | 'ai'
   const [listPrice, setListPrice] = useState("");
+  const [autoDev, setAutoDev] = useState({ enabled: false, time_utc: "09:00" });
+  const [lastAutoDevRun, setLastAutoDevRun] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -87,7 +91,14 @@ export default function AgentProfile() {
       }
       setAIListings(aiMap);
 
-      setLoading(false);
+      // Load AutoDev schedule and last run
+      const schedArr = await base44.entities.AgentAutoSchedule.filter({ agent_id: agentId }, "-created_date", 1);
+      const sched = (schedArr && schedArr[0]) || null;
+      setAutoDev({ enabled: !!sched?.enabled, time_utc: sched?.time_utc || "09:00" });
+      const runs = await base44.entities.AutoDevRun.filter({ agent_id: agentId }, "-started_at", 1);
+      setLastAutoDevRun((runs && runs[0]) || null);
+
+       setLoading(false);
     };
     load();
   }, [agentId]);
@@ -196,7 +207,19 @@ export default function AgentProfile() {
       setAIListings(prev => ({ ...prev, [selectedAssetId]: lst && lst[0] ? lst[0] : null }));
     }
     setListPrice("");
-  };
+    };
+
+    const saveSchedule = async () => {
+     if (!agentId) return;
+     const arr = await base44.entities.AgentAutoSchedule.filter({ agent_id: agentId }, "-created_date", 1);
+     if (arr && arr[0]) {
+       await base44.entities.AgentAutoSchedule.update(arr[0].id, { enabled: autoDev.enabled, time_utc: autoDev.time_utc });
+     } else {
+       await base44.entities.AgentAutoSchedule.create({ agent_id: agentId, enabled: autoDev.enabled, time_utc: autoDev.time_utc });
+     }
+     const runs = await base44.entities.AutoDevRun.filter({ agent_id: agentId }, "-started_at", 1);
+     setLastAutoDevRun((runs && runs[0]) || null);
+    };
 
   const title = agent ? `Agent Profile Character Name: ${agent.name}` : "Agent Profile";
 
@@ -228,6 +251,7 @@ export default function AgentProfile() {
             <TabsTrigger value="logs">Logs</TabsTrigger>
             <TabsTrigger value="inventory">Inventory</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
+            <TabsTrigger value="autodev">AutoDev</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
