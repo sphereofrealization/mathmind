@@ -472,6 +472,37 @@ export default function AgentProfile() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="autodev">
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle>Auto Developer</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <input
+                    id="autodev-enabled"
+                    type="checkbox"
+                    checked={autoDev.enabled}
+                    onChange={(e) => setAutoDev(prev => ({ ...prev, enabled: e.target.checked }))}
+                  />
+                  <label htmlFor="autodev-enabled">Enable daily AutoDev</label>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                  <div className="text-sm">
+                    <div className="font-medium text-card-foreground">Run time (UTC)</div>
+                    <Input type="time" value={autoDev.time_utc} onChange={(e) => setAutoDev(prev => ({ ...prev, time_utc: e.target.value }))} className="w-40" />
+                  </div>
+                  <Button onClick={saveSchedule}>Save Schedule</Button>
+                  <Link to={createPageUrl("AutoDev")} className="text-sm underline">Open AutoDev</Link>
+                </div>
+                <Separator />
+                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  Last run: {lastAutoDevRun ? new Date(lastAutoDevRun.started_at).toLocaleString() : '—'} {lastAutoDevRun ? `• ${lastAutoDevRun.status}` : ''}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
