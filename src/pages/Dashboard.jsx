@@ -48,7 +48,7 @@ export default function Dashboard() {
         >
           <div>
             <h1 className="text-4xl font-extrabold mb-2 tracking-wide" style={{color: 'var(--primary-navy)'}}>
-              The Formal Authority
+              Math in Space
             </h1>
             <p className="text-lg" style={{color: 'var(--text-secondary)'}}>
               Transform your mathematics content into an intelligent knowledge base
