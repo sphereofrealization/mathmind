@@ -16,7 +16,7 @@ import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
 import { AIChunk } from "@/entities/AIChunk";
 import { base44 } from "@/api/base44Client";
-import { recordTransfer, rewardIndexing, rewardContentGeneration, SYSTEM_EMAIL } from "@/components/economy/Economy";
+import { recordTransfer, rewardIndexing, rewardContentGeneration, chargeChatUsage, rewardCollectorYield, processMarketplacePurchase, SYSTEM_EMAIL } from "@/components/economy/Economy";
 
 const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
 const withRetry = async (fn, maxRetries = 4, baseDelay = 800) => {

@@ -43,3 +43,46 @@ export async function chargeChatUsage({ from, aiOwner, amount = 0.2, aiId = null
   const refs = aiId ? { ai_id: aiId } : {};
   return recordTransfer({ from, to: aiOwner || SYSTEM_EMAIL, amount, reason: "chat_usage", refs });
 }
+
+// Reward holders of editions with a small yield per tick
+export async function rewardCollectorYield({ owner, editionsCount = 1 }) {
+  const count = Number(editionsCount || 0);
+  if (!owner || count <= 0) return null;
+  const amt = +(0.02 * count).toFixed(4); // small per-tick yield per edition
+  return recordTransfer({ from: SYSTEM_EMAIL, to: owner, amount: amt, reason: "collector_yield" });
+}
+
+// Process a marketplace purchase: transfer funds, update records, and rebate buyer
+export async function processMarketplacePurchase({ buyerEmail, listingId }) {
+  const buyer = String(buyerEmail || "").toLowerCase();
+  if (!buyer || !listingId) return null;
+  const Listing = base44.entities.MarketplaceListing;
+  const Asset = base44.entities.AIAsset;
+  const Transfer = base44.entities.AITransfer;
+  const arr = await Listing.filter({ id: listingId });
+  const listing = arr && arr[0];
+  if (!listing || listing.status !== "active") return null;
+  const price = Number(listing.price || 0);
+  if (!(price > 0)) return null;
+
+  // Money flow: buyer -> seller
+  await recordTransfer({
+    from: buyer,
+    to: String(listing.seller_email || "").toLowerCase(),
+    amount: price,
+    reason: "marketplace_purchase",
+    refs: { listing_id: listing.id, asset_id: listing.asset_id, ai_id: listing.ai_id }
+  });
+
+  // Update listing and asset ownership
+  await Listing.update(listing.id, { status: "sold", buyer_email: buyer });
+  await Asset.update(listing.asset_id, { owner_email: buyer });
+  await Transfer.create({ asset_id: listing.asset_id, ai_id: listing.ai_id, from_email: listing.seller_email, to_email: buyer, listing_id: listing.id, note: "Auto-purchase by agent" });
+
+  // Small buyer rebate to incentivize collecting
+  const rebate = Math.min(+(0.02 * price).toFixed(4), 0.2);
+  if (rebate > 0) {
+    await recordTransfer({ from: SYSTEM_EMAIL, to: buyer, amount: rebate, reason: "market_rebate", refs: { listing_id: listing.id } });
+  }
+  return true;
+}
