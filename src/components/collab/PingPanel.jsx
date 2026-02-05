@@ -34,13 +34,15 @@ const withRetry = async (fn, maxRetries = 3, baseDelay = 700) => {
     try {
       const schema = { type: 'object', properties: { answer: { type: 'string' } } };
       const outs = [];
+      // Run calls with backoff to avoid rate limits (sequence with short gap)
       for (const ai of aiOptions) {
-        const res = await base44.integrations.Core.InvokeLLM({
+        const res = await withRetry(() => base44.integrations.Core.InvokeLLM({
           prompt: `You are collaborating as AI ${ai.name}. Domain=${domain}. Respond concisely and helpfully to: ${prompt}`,
           response_json_schema: schema,
           add_context_from_internet: false
-        });
+        }), 3, 700);
         outs.push({ ai, text: res?.answer || "", rating: 0 });
+        await sleep(250); // tiny spacing between requests
       }
       setResponses(outs);
     } finally {
