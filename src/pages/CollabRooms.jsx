@@ -81,10 +81,10 @@ export default function CollabRooms() {
   };
 
   const moveTask = async (task, to) => {
-    await base44.entities.CollabTask.update(task.id, { column: to });
+    await withRetry(() => base44.entities.CollabTask.update(task.id, { column: to }));
     setTasks(prev => prev.map(x => x.id === task.id ? { ...x, column: to } : x));
     if (to === 'build' && selected) {
-      // Fire-and-forget automation for build
+      // Fire-and-forget automation for build (no retries inside)
       runBuildAutomation(selected, task);
     }
   };
