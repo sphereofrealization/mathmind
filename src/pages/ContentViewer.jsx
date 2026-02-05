@@ -36,6 +36,12 @@ export default function ContentViewerPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const isTex = useMemo(() => {
+    const name = (book?.file_url || '').toLowerCase();
+    const content = book?.extracted_content || '';
+    return name.endsWith('.tex') || content.includes('\\begin{document}') || content.includes('\\documentclass');
+  }, [book]);
+
   useEffect(() => {
     const fetchBook = async () => {
       const params = new URLSearchParams(location.search);
@@ -95,11 +101,6 @@ export default function ContentViewerPage() {
     );
   }
 
-  const isTex = useMemo(() => {
-    const name = (book?.file_url || '').toLowerCase();
-    const content = book?.extracted_content || '';
-    return name.endsWith('.tex') || content.includes('\\begin{document}') || content.includes('\\documentclass');
-  }, [book]);
   return (
     <div className="min-h-screen p-4 md:p-8" style={{backgroundColor: 'var(--soft-gray)'}}>
       <div className="max-w-4xl mx-auto">
