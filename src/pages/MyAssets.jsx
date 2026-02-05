@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { AIAsset } from "@/entities/AIAsset";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { MarketplaceListing } from "@/entities/MarketplaceListing";
+import { BookListing } from "@/entities/BookListing";
+import { BookAsset } from "@/entities/BookAsset";
+import { BookTransfer } from "@/entities/BookTransfer";
 import { AITransfer } from "@/entities/AITransfer";
 import { User } from "@/entities/User";
 import { FruitlesTransaction } from "@/entities/FruitlesTransaction";
@@ -166,7 +169,7 @@ export default function MyAssetsPage() {
       <div className="max-w-6xl mx-auto">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--primary-navy)' }}>
-            My AI Assets
+           My Assets
           </h1>
           <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
             Transfer your tokenized AIs or list them on the marketplace.
