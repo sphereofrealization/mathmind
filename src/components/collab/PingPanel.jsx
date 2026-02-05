@@ -6,7 +6,21 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function PingPanel({ room, ais, defaultDomain }) {
+const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+const withRetry = async (fn, maxRetries = 3, baseDelay = 700) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try { return await fn(); }
+    catch (e) {
+      const msg = String(e || '');
+      const is429 = msg.includes('429') || msg.toLowerCase().includes('rate');
+      if (!is429 || attempt === maxRetries) throw e;
+      const delay = baseDelay * Math.pow(2, attempt);
+      await sleep(delay);
+    }
+  }
+};
+
+ export default function PingPanel({ room, ais, defaultDomain }) {
   const [prompt, setPrompt] = useState("");
   const [domain, setDomain] = useState(defaultDomain || (room?.domain_tags?.[0] || "general"));
   const [loading, setLoading] = useState(false);
