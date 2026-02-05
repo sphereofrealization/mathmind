@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { MathBook } from '@/entities/MathBook';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft, BookOpen, User, Tag, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import LaTeXBookViewer from '../components/viewers/LaTeXBookViewer';
 import { format } from "date-fns";
 import _ from 'lodash';
 
@@ -94,6 +95,11 @@ export default function ContentViewerPage() {
     );
   }
 
+  const isTex = useMemo(() => {
+    const name = (book?.file_url || '').toLowerCase();
+    const content = book?.extracted_content || '';
+    return name.endsWith('.tex') || content.includes('\\begin{document}') || content.includes('\\documentclass');
+  }, [book]);
   return (
     <div className="min-h-screen p-4 md:p-8" style={{backgroundColor: 'var(--soft-gray)'}}>
       <div className="max-w-4xl mx-auto">
@@ -133,12 +139,16 @@ export default function ContentViewerPage() {
               </div>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4" style={{color: 'var(--primary-navy)'}}>Extracted Content</h3>
-              <div className="bg-white p-4 rounded-lg border max-h-[60vh] overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-sm" style={{color: '#000', fontFamily: 'sans-serif'}}>
-                  {book.extracted_content || "No content extracted."}
-                </pre>
-              </div>
+              <h3 className="text-xl font-semibold mb-4" style={{color: 'var(--primary-navy)'}}>Book Viewer</h3>
+              {isTex ? (
+                <LaTeXBookViewer source={book.extracted_content || ''} />
+              ) : (
+                <div className="bg-white p-4 rounded-lg border max-h-[60vh] overflow-y-auto">
+                  <pre className="whitespace-pre-wrap text-sm" style={{color: '#000', fontFamily: 'sans-serif'}}>
+                    {book.extracted_content || "No content extracted."}
+                  </pre>
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>

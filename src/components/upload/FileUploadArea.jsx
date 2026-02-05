@@ -1,4 +1,3 @@
-
 import React, { useCallback, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -48,9 +47,10 @@ export default function FileUploadArea({ onFileSelect, selectedFile }) {
     if (file.type === 'application/pdf') return 'PDF';
     if (file.type === 'text/plain') return 'TXT';
     // Fallback if type isn't standard, try by extension
-    const fileName = file.name.toLowerCase();
+    const fileName = (file.name || '').toLowerCase();
     if (fileName.endsWith('.pdf')) return 'PDF';
     if (fileName.endsWith('.txt')) return 'TXT';
+    if (fileName.endsWith('.tex')) return 'TEX';
     return 'Document';
   };
 
@@ -75,7 +75,7 @@ export default function FileUploadArea({ onFileSelect, selectedFile }) {
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,.txt"
+              accept=".pdf,.txt,.tex"
               onChange={handleFileInput}
               className="hidden"
             />
@@ -111,7 +111,7 @@ export default function FileUploadArea({ onFileSelect, selectedFile }) {
                   Upload Mathematics Content
                 </h3>
                 <p className="text-lg mb-6" style={{color: 'var(--text-secondary)'}}>
-                  Drag and drop your PDF or TXT file here, or click to browse
+                  Drag and drop your PDF, TXT, or TEX (LaTeX) file here, or click to browse
                 </p>
                 <Button
                   onClick={() => fileInputRef.current?.click()}
@@ -126,6 +126,7 @@ export default function FileUploadArea({ onFileSelect, selectedFile }) {
                   <div className="flex justify-center gap-6">
                     <span>📄 PDF - Books & Documents</span>
                     <span>📝 TXT - Raw Training Data</span>
+                    <span>∑ TEX - LaTeX Source</span>
                   </div>
                   <p>Files up to 50MB</p>
                 </div>

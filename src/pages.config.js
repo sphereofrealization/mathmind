@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIChat from './pages/AIChat';
+import AgentProfile from './pages/AgentProfile';
 import Agents from './pages/Agents';
 import AssetFinder from './pages/AssetFinder';
 import BuyTokens from './pages/BuyTokens';
@@ -70,12 +71,12 @@ import Synthesizer from './pages/Synthesizer';
 import TrainAI from './pages/TrainAI';
 import TrainingMonitor from './pages/TrainingMonitor';
 import Upload from './pages/Upload';
-import AgentProfile from './pages/AgentProfile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIChat": AIChat,
+    "AgentProfile": AgentProfile,
     "Agents": Agents,
     "AssetFinder": AssetFinder,
     "BuyTokens": BuyTokens,
@@ -98,7 +99,6 @@ export const PAGES = {
     "TrainAI": TrainAI,
     "TrainingMonitor": TrainingMonitor,
     "Upload": Upload,
-    "AgentProfile": AgentProfile,
 }
 
 export const pagesConfig = {

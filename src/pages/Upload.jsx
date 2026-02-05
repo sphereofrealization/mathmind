@@ -51,9 +51,12 @@ export default function UploadPage() {
   });
 
   const handleFileSelect = (file) => {
-    const validTypes = ['application/pdf', 'text/plain'];
-    if (!validTypes.includes(file.type)) {
-      setError('Please select a PDF or TXT file');
+    const name = (file?.name || '').toLowerCase();
+    const isPdf = file?.type === 'application/pdf' || name.endsWith('.pdf');
+    const isTxt = file?.type === 'text/plain' || name.endsWith('.txt');
+    const isTex = name.endsWith('.tex');
+    if (!(isPdf || isTxt || isTex)) {
+      setError('Please select a PDF, TXT, or TEX (LaTeX) file');
       return;
     }
     setSelectedFile(file);
@@ -75,17 +78,20 @@ export default function UploadPage() {
       
       setUploadProgress(40);
 
-      // Handle TXT files differently - they don't need extraction
-      if (selectedFile.type === 'text/plain') {
+      // Handle TXT/TEX files differently - they don't need extraction
+      const fileNameLower = (selectedFile.name || '').toLowerCase();
+      const isTxt = selectedFile.type === 'text/plain' || fileNameLower.endsWith('.txt');
+      const isTex = fileNameLower.endsWith('.tex');
+      if (isTxt || isTex) {
         setUploadProgress(60);
         
-        // For TXT files, we can read the content directly from the URL
+        // For TXT/TEX files, we can read the content directly from the URL
         const response = await fetch(file_url);
         const textContent = await response.text();
         
         setUploadProgress(80);
 
-        // Estimate word count for TXT files
+        // Estimate word count for TXT/TEX files
         const wordCount = textContent.split(/\s+/).filter(word => word.length > 0).length;
 
         setExtractedContent({
@@ -98,7 +104,7 @@ export default function UploadPage() {
         // Set book title from filename
         setBookMetadata(prev => ({
           ...prev,
-          title: selectedFile.name.replace(/\.txt$/i, '')
+          title: selectedFile.name.replace(/\.(txt|tex)$/i, '')
         }));
 
         setUploadProgress(100);
@@ -388,7 +394,7 @@ export default function UploadPage() {
                       disabled={isUploading}
                     >
                       <Brain className="w-5 h-5 mr-2" />
-                      {selectedFile.type === 'text/plain' ? 'Process Text for AI Training' : 'Process Book for AI Training'}
+                      {(selectedFile.type === 'text/plain' || (selectedFile.name || '').toLowerCase().endsWith('.txt') || ( (selectedFile.name || '').toLowerCase().endsWith('.tex') )) ? 'Process Text / LaTeX' : 'Process Book (PDF)'}
                     </Button>
                   </div>
                 )}
