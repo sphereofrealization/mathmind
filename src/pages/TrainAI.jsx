@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
 import { MathBook } from '@/entities/MathBook';
 import { TrainedAI } from '@/entities/TrainedAI';
 import { AIAsset } from "@/entities/AIAsset";
@@ -107,23 +107,32 @@ export default function TrainAIPage() {
       });
       
       // AUTO-TOKENIZE: create AIAsset for this AI, owned by the creator
-      const me = await User.me();
-      const myEmail = (me.email || "").toLowerCase(); // Normalize email to lowercase
-      const makeSymbol = (name) => {
-        const letters = (name || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-        if (letters.length >= 3) return letters.slice(0, 6);
-        const base = (name || 'AI').toUpperCase().replace(/[^A-Z]/g, '');
-        return (base + 'TOK').slice(0, 6) || 'AIOWN';
-      };
-      await AIAsset.create({
-        ai_id: ai.id,
-        name: ai.name,
-        symbol: makeSymbol(ai.name),
-        owner_email: myEmail,
-        transferable: true,
-        total_supply: 1,
-        royalty_bps: 0
-      });
+                  const me = await User.me();
+                  const myEmail = (me.email || "").toLowerCase();
+                  const makeSymbol = (name) => {
+                    const letters = (name || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+                    if (letters.length >= 3) return letters.slice(0, 6);
+                    const base = (name || 'AI').toUpperCase().replace(/[^A-Z]/g, '');
+                    return (base + 'TOK').slice(0, 6) || 'AIOWN';
+                  };
+                  // Generate mechanical artifact icon
+                  let icon_url = null;
+                  try {
+                    const img = await base44.integrations.Core.GenerateImage({
+                      prompt: `intricate mechanical artifact emblem icon, brass gears, etched metal, 2D flat icon, centered, no text, for AI named ${ai.name}`
+                    });
+                    icon_url = img?.url || null;
+                  } catch {}
+                  await AIAsset.create({
+                    ai_id: ai.id,
+                    name: ai.name,
+                    symbol: makeSymbol(ai.name),
+                    owner_email: myEmail,
+                    transferable: true,
+                    total_supply: 1,
+                    royalty_bps: 0,
+                    ...(icon_url ? { icon_url } : {})
+                  });
 
       // Reset form
       setAiName('');

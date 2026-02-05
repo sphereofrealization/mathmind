@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Bot, Play, Square, RefreshCw, Globe, Clock, List } from "lucide-react";
+import { Bot, Play, Square, RefreshCw, Globe, Clock, List, Sword } from "lucide-react";
 import { MathBook } from "@/entities/MathBook";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { TrainingJob } from "@/entities/TrainingJob";
@@ -86,27 +86,56 @@ export default function AgentsPage() {
   useEffect(() => { load(); }, []);
 
   const createAgent = async () => {
-    if (!name.trim() || !objective.trim()) return;
-    setCreating(true);
-    try {
-      await SiteAgent.create({
-        name: name.trim(),
-        objective: objective.trim(),
-        loop_enabled: false,
-        loop_interval_seconds: Math.max(30, Number(intervalSec) || 300),
-        research_enabled: !!researchEnabled,
-        dev_enabled: !!devEnabled,
-        refine_enabled: !!refineEnabled,
-        status: "idle",
-        ticks_count: 0
-      });
-      setName(""); setObjective(""); setIntervalSec(300);
-      setResearchEnabled(true); setDevEnabled(true); setRefineEnabled(true);
-      await load();
-    } finally {
-      setCreating(false);
-    }
-  };
+            if (!name.trim() || !objective.trim()) return;
+            setCreating(true);
+            try {
+              const created = await SiteAgent.create({
+                name: name.trim(),
+                objective: objective.trim(),
+                loop_enabled: false,
+                loop_interval_seconds: Math.max(30, Number(intervalSec) || 300),
+                research_enabled: !!researchEnabled,
+                dev_enabled: !!devEnabled,
+                refine_enabled: !!refineEnabled,
+                status: "idle",
+                ticks_count: 0
+              });
+              // Auto-tokenize agent with weapon icon
+              try {
+                const me = await base44.auth.me();
+                const myEmail = (me?.email || '').toLowerCase();
+                const makeSymbol = (nm) => {
+                  const letters = (nm || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+                  if (letters.length >= 3) return letters.slice(0, 6);
+                  const base = (nm || 'AGT').toUpperCase().replace(/[^A-Z]/g, '');
+                  return (base + 'TOK').slice(0, 6) || 'AGTOK';
+                };
+                let icon_url = null;
+                try {
+                  const img = await base44.integrations.Core.GenerateImage({
+                    prompt: `fantasy weapon emblem icon, forged steel, runes, arcane glow, 2D flat, centered, no text, for agent ${created.name}`
+                  });
+                  icon_url = img?.url || null;
+                } catch {}
+                await base44.entities.AgentAsset.create({
+                  agent_id: created.id,
+                  name: created.name,
+                  symbol: makeSymbol(created.name),
+                  owner_email: myEmail,
+                  transferable: true,
+                  total_supply: 1,
+                  royalty_bps: 0,
+                  ...(icon_url ? { icon_url } : {})
+                });
+              } catch {}
+
+              setName(""); setObjective(""); setIntervalSec(300);
+              setResearchEnabled(true); setDevEnabled(true); setRefineEnabled(true);
+              await load();
+            } finally {
+              setCreating(false);
+            }
+          };
 
   // start/stop loop by updating entity + local timer
   const startLoop = async (agent) => {

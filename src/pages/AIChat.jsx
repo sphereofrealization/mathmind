@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { TrainedAI } from '@/entities/TrainedAI';
+import { AIAsset } from '@/entities/AIAsset';
 import { AIChunk } from '@/entities/AIChunk';
 import { InvokeLLM } from '@/integrations/Core';
 import { Button } from '@/components/ui/button';
@@ -51,6 +52,7 @@ export default function AIChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedAI, setSelectedAI] = useState(null);
   const [availableAIs, setAvailableAIs] = useState([]);
+const [aiAssets, setAiAssets] = useState({});
   const messagesEndRef = useRef(null);
 
   const [session, setSession] = useState(null);
@@ -135,9 +137,15 @@ export default function AIChatPage() {
   }, [learningEnabled, useLearningsInContext, session]);
 
   const loadAIs = async () => {
-    const completedAIs = await TrainedAI.filter({ training_status: 'completed' });
-    setAvailableAIs(completedAIs);
-  };
+            const completedAIs = await TrainedAI.filter({ training_status: 'completed' });
+            setAvailableAIs(completedAIs);
+            try {
+              const assets = await AIAsset.list('-updated_date', 500);
+              const map = {};
+              (assets || []).forEach(a => { if (a.ai_id) map[a.ai_id] = a; });
+              setAiAssets(map);
+            } catch {}
+          };
 
   // Learn from the latest turn
   const performLearning = async (userText, aiText, userMsgId = null, aiMsgId = null) => {
