@@ -53,11 +53,11 @@ export default function CollabRooms() {
     if (!form.name.trim()) return;
     setCreating(true);
     try {
-      const room = await base44.entities.CollabRoom.create({
+      const room = await withRetry(() => base44.entities.CollabRoom.create({
         name: form.name.trim(),
         description: form.description.trim(),
         domain_tags: form.domain_tags.split(",").map(s=>s.trim()).filter(Boolean)
-      });
+      }));
       setForm({ name: "", description: "", domain_tags: "" });
       setRooms(prev => [room, ...prev]);
     } finally {
