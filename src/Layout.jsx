@@ -240,13 +240,13 @@ export default function Layout({ children, currentPageName }) {
         /* Force common light backgrounds to dark in this theme for contrast */
         [data-theme=klingon] .bg-white { 
           background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,245,220,0.96)) !important;
-          color: hsl(var(--card-foreground)) !important;
+          color: #0b0b0b !important;
           box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-          --text-secondary: #4a3b2b;
+          --text-secondary: #111111;
         }
         [data-theme=klingon] .bg-card {
-          color: hsl(var(--card-foreground)) !important;
-          --text-secondary: #4a3b2b;
+          color: #0b0b0b !important;
+          --text-secondary: #111111;
         }
         /* Improve contrast: avoid gold text on light panels */
         [data-theme=klingon] .bg-white .text-amber-400,
@@ -257,7 +257,12 @@ export default function Layout({ children, currentPageName }) {
         [data-theme=klingon] .bg-card .text-amber-500,
         [data-theme=klingon] .bg-card .text-yellow-400,
         [data-theme=klingon] .bg-card .text-yellow-500 {
-          color: hsl(var(--card-foreground)) !important;
+          color: #0b0b0b !important;
+        }
+        /* Force black text on light surfaces for now */
+        [data-theme=klingon] .bg-white *,
+        [data-theme=klingon] .bg-card * {
+          color: #0b0b0b !important;
         }
         [data-theme=klingon] .border { border-color: hsl(var(--border)) !important; }
         /* contrast fix: remove gray-600 override */
