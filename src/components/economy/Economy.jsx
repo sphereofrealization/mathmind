@@ -95,3 +95,43 @@ export async function processMarketplacePurchase({ buyerEmail, listingId }) {
   }
   return true;
 }
+
+// --- Agent wallet helpers ---
+async function getOrCreateAgentWallet(agentId, ownerEmail = null) {
+  const W = base44.entities.AgentWallet;
+  const arr = await W.filter({ agent_id: agentId }, '-updated_date', 1);
+  let w = arr && arr[0];
+  if (!w) {
+    w = await W.create({ agent_id: agentId, owner_email: ownerEmail ? String(ownerEmail).toLowerCase() : null, balance: 0, total_earned: 0, total_harvested: 0 });
+  }
+  return w;
+}
+
+export async function accrueAgent({ agentId, ownerEmail = null, amount = 0, reason = "", refs = {} }) {
+  if (!agentId) return null;
+  const inc = Number(amount || 0);
+  if (!(inc > 0)) return null;
+  const W = base44.entities.AgentWallet;
+  const w = await getOrCreateAgentWallet(agentId, ownerEmail);
+  const newBal = +(Number(w.balance || 0) + inc).toFixed(4);
+  const newEarn = +(Number(w.total_earned || 0) + inc).toFixed(4);
+  await W.update(w.id, { balance: newBal, total_earned: newEarn, ...(ownerEmail && !w.owner_email ? { owner_email: String(ownerEmail).toLowerCase() } : {}) });
+  return true;
+}
+
+export async function harvestAgent({ agentId, amount = null }) {
+  if (!agentId) return null;
+  const W = base44.entities.AgentWallet;
+  const arr = await W.filter({ agent_id: agentId }, '-updated_date', 1);
+  const w = arr && arr[0];
+  if (!w) return null;
+  const bal = Number(w.balance || 0);
+  const toHarvest = amount ? Math.min(bal, Number(amount)) : bal;
+  if (!(toHarvest > 0)) return null;
+  if (!w.owner_email) return null;
+  await recordTransfer({ from: SYSTEM_EMAIL, to: String(w.owner_email).toLowerCase(), amount: toHarvest, reason: 'agent_harvest', refs: { agent_id: agentId } });
+  const newBal = +(bal - toHarvest).toFixed(4);
+  const newHarv = +(Number(w.total_harvested || 0) + toHarvest).toFixed(4);
+  await W.update(w.id, { balance: newBal, total_harvested: newHarv, last_harvest_at: new Date().toISOString() });
+  return true;
+}
