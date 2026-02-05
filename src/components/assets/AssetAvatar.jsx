@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Cog, BookOpen, Sword, Sparkles } from "lucide-react";
+import { Box, BookOpen, Sword, Sparkles } from "lucide-react";
 
 function hash32(input) {
   const str = String(input || "");
@@ -20,7 +20,7 @@ const typeStyles = {
 };
 
 const typeIcon = {
-  ai: Cog,
+  ai: Box,
   book: BookOpen,
   agent: Sword,
 };
@@ -44,9 +44,10 @@ export default function AssetAvatar({
   const generate = async () => {
     if (!entityId || !entityType) return;
     setLoading(true);
-    const prompt = `Flat emblem icon, high-contrast, transparent background, centered. Style: clean vector. Subject: ${
-      type === "ai" ? "mechanical gear artifact" : type === "book" ? "ancient tome" : "forged weapon sigil"
-    }. Color mood per type. Uniqueness seed: ${seed32}.`;
+    const subject = type === "ai" ? "mystic artifact relic"
+      : type === "book" ? "arcane tome / grimoire"
+      : "forged weapon sigil";
+    const prompt = `Pixel art 16/32-bit RPG icon, crisp edges, transparent background, centered, no text. Subject: ${subject}. Vivid color accents per type. Seed: ${seed32}.`;
     try {
       const res = await base44.integrations.Core.GenerateImage({ prompt });
       const newUrl = res.url;

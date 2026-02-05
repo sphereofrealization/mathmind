@@ -3,6 +3,14 @@ import { MarketplaceListing } from "@/entities/MarketplaceListing";
 import { AIAsset } from "@/entities/AIAsset";
 import { TrainedAI } from "@/entities/TrainedAI";
 import { AITransfer } from "@/entities/AITransfer";
+import { BookListing } from "@/entities/BookListing";
+import { BookAsset } from "@/entities/BookAsset";
+import { BookTransfer } from "@/entities/BookTransfer";
+import { MathBook } from "@/entities/MathBook";
+import { AgentListing } from "@/entities/AgentListing";
+import { AgentAsset } from "@/entities/AgentAsset";
+import { AgentTransfer } from "@/entities/AgentTransfer";
+import { SiteAgent } from "@/entities/SiteAgent";
 import { User } from "@/entities/User";
 import { FruitlesTransaction } from "@/entities/FruitlesTransaction";
 import { ReferralCampaign } from "@/entities/ReferralCampaign";
@@ -14,11 +22,17 @@ import { Input } from "@/components/ui/input";
 import { Store, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AssetAvatar from "../components/assets/AssetAvatar";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function MarketplacePage() {
   const [me, setMe] = useState(null);
   const [activeListings, setActiveListings] = useState([]);
   const [meta, setMeta] = useState({}); // {listingId: {asset, ai}}
+  const [bookListings, setBookListings] = useState([]);
+  const [bookMeta, setBookMeta] = useState({}); // {listingId: {asset, book}}
+  const [agentListings, setAgentListings] = useState([]);
+  const [agentMeta, setAgentMeta] = useState({}); // {listingId: {asset, agent}}
+  const [activeTab, setActiveTab] = useState("ai");
   const [balance, setBalance] = useState(0);
 
   // State for local-only fruitles seeding tools
@@ -50,6 +64,28 @@ export default function MarketplacePage() {
         m[l.id] = { asset: asset && asset[0], ai: ai && ai[0] };
       }
       setMeta(m);
+
+      // Books
+      const bl = await BookListing.filter({ status: "active" }, "-created_date", 200);
+      setBookListings(bl);
+      const bm = {};
+      for (const l of bl) {
+        const asset = await BookAsset.filter({ id: l.asset_id });
+        const book = await MathBook.filter({ id: l.book_id });
+        bm[l.id] = { asset: asset && asset[0], book: book && book[0] };
+      }
+      setBookMeta(bm);
+
+      // Agents
+      const al = await AgentListing.filter({ status: "active" }, "-created_date", 200);
+      setAgentListings(al);
+      const am = {};
+      for (const l of al) {
+        const asset = await AgentAsset.filter({ id: l.asset_id });
+        const agent = await SiteAgent.filter({ id: l.agent_id });
+        am[l.id] = { asset: asset && asset[0], agent: agent && agent[0] };
+      }
+      setAgentMeta(am);
 
       // wallet
       const myEmail = (user.email || "").toLowerCase();
@@ -190,6 +226,78 @@ export default function MarketplacePage() {
     if ((pack.asset.owner_email || "").toLowerCase() !== myEmail) return alert("Only the owner can cancel the listing.");
     await MarketplaceListing.update(listing.id, { status: "cancelled" });
     await refreshListing();
+  };
+
+  const handleBuyBook = async (listing) => {
+    const pack = bookMeta[listing.id];
+    if (!pack?.asset) return;
+    const myEmail = (me.email || "").toLowerCase();
+    if ((pack.asset.owner_email || "").toLowerCase() === myEmail) return alert("You already own this book.");
+    const price = listing.price;
+    if (balance < price) return alert("Insufficient fruitles.");
+    const royaltyBps = typeof pack.asset.royalty_bps === 'number' ? pack.asset.royalty_bps : 0;
+    const PLATFORM_FEE_BPS = 250;
+    const royaltyAmt = +(price * (royaltyBps / 10000)).toFixed(2);
+    const feeAmt = +(price * (PLATFORM_FEE_BPS / 10000)).toFixed(2);
+    const sellerNet = +(price - royaltyAmt - feeAmt).toFixed(2);
+    const creatorEmail = (pack.book?.created_by || "").toLowerCase();
+    if (royaltyAmt > 0 && creatorEmail) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: creatorEmail, amount: royaltyAmt, reason: "royalty", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    if (feeAmt > 0) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: "system@fruitles", amount: feeAmt, reason: "platform_fee", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    if (sellerNet > 0) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: (pack.asset.owner_email || "").toLowerCase(), amount: sellerNet, reason: "marketplace_purchase", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    await BookListing.update(listing.id, { status: "sold", buyer_email: myEmail });
+    await BookTransfer.create({ asset_id: pack.asset.id, book_id: listing.book_id, from_email: (pack.asset.owner_email || "").toLowerCase(), to_email: myEmail, listing_id: listing.id });
+    await BookAsset.update(pack.asset.id, { owner_email: myEmail });
+    alert("Purchase successful! Book transferred to you.");
+  };
+
+  const handleCancelBook = async (listing) => {
+    const pack = bookMeta[listing.id];
+    if (!pack?.asset) return;
+    const myEmail = (me.email || "").toLowerCase();
+    if ((pack.asset.owner_email || "").toLowerCase() !== myEmail) return alert("Only the owner can cancel the listing.");
+    await BookListing.update(listing.id, { status: "cancelled" });
+  };
+
+  const handleBuyAgent = async (listing) => {
+    const pack = agentMeta[listing.id];
+    if (!pack?.asset) return;
+    const myEmail = (me.email || "").toLowerCase();
+    if ((pack.asset.owner_email || "").toLowerCase() === myEmail) return alert("You already own this agent.");
+    const price = listing.price;
+    if (balance < price) return alert("Insufficient fruitles.");
+    const royaltyBps = typeof pack.asset.royalty_bps === 'number' ? pack.asset.royalty_bps : 0;
+    const PLATFORM_FEE_BPS = 250;
+    const royaltyAmt = +(price * (royaltyBps / 10000)).toFixed(2);
+    const feeAmt = +(price * (PLATFORM_FEE_BPS / 10000)).toFixed(2);
+    const sellerNet = +(price - royaltyAmt - feeAmt).toFixed(2);
+    const creatorEmail = (pack.agent?.created_by || "").toLowerCase();
+    if (royaltyAmt > 0 && creatorEmail) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: creatorEmail, amount: royaltyAmt, reason: "royalty", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    if (feeAmt > 0) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: "system@fruitles", amount: feeAmt, reason: "platform_fee", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    if (sellerNet > 0) {
+      await FruitlesTransaction.create({ from_email: myEmail, to_email: (pack.asset.owner_email || "").toLowerCase(), amount: sellerNet, reason: "marketplace_purchase", listing_id: listing.id, asset_id: pack.asset.id });
+    }
+    await AgentListing.update(listing.id, { status: "sold", buyer_email: myEmail });
+    await AgentTransfer.create({ asset_id: pack.asset.id, agent_id: listing.agent_id, from_email: (pack.asset.owner_email || "").toLowerCase(), to_email: myEmail, listing_id: listing.id });
+    await AgentAsset.update(pack.asset.id, { owner_email: myEmail });
+    alert("Purchase successful! Agent transferred to you.");
+  };
+
+  const handleCancelAgent = async (listing) => {
+    const pack = agentMeta[listing.id];
+    if (!pack?.asset) return;
+    const myEmail = (me.email || "").toLowerCase();
+    if ((pack.asset.owner_email || "").toLowerCase() !== myEmail) return alert("Only the owner can cancel the listing.");
+    await AgentListing.update(listing.id, { status: "cancelled" });
   };
 
   // Local-only developer tool for seeding fruitles
