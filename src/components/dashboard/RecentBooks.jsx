@@ -49,7 +49,6 @@ export default function RecentBooks({ books, isLoading }) {
     })();
     return () => { cancelled = true; };
   }, [books]);
-  const recentBooks = books.slice(0, 5);
 
   return (
     <Card className="shadow-lg border-0">

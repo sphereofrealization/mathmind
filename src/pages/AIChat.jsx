@@ -19,7 +19,6 @@ import { ConversationMessage } from '@/entities/ConversationMessage';
 import { AILearning } from '@/entities/AILearning';
 import { AIModelProfile } from '@/entities/AIModelProfile';
 import { Switch } from '@/components/ui/switch';
-import { AIAsset } from '@/entities/AIAsset';
 import { base44 } from '@/api/base44Client';
 import { chargeChatUsage } from '@/components/economy/Economy';
 
