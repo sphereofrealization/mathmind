@@ -1,0 +1,71 @@
+{
+  "name": "CrawlItem",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id that requested this crawl"
+    },
+    "url": {
+      "type": "string",
+      "description": "Target URL to crawl"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Extracted domain for grouping"
+    },
+    "priority": {
+      "type": "number",
+      "default": 0,
+      "description": "Higher runs earlier"
+    },
+    "depth": {
+      "type": "number",
+      "default": 0,
+      "description": "Crawl depth from seed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "fetching",
+        "fetched",
+        "error"
+      ],
+      "default": "queued",
+      "description": "Lifecycle status"
+    },
+    "discovered_from": {
+      "type": "string",
+      "description": "Referrer URL or seed context"
+    },
+    "title": {
+      "type": "string",
+      "description": "Page title if fetched"
+    },
+    "content": {
+      "type": "string",
+      "description": "Extracted main text content"
+    },
+    "content_type": {
+      "type": "string",
+      "description": "MIME or inferred type"
+    },
+    "tokens_estimate": {
+      "type": "number",
+      "description": "Rough token count for budgeting"
+    },
+    "fetched_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when content was fetched"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if any"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

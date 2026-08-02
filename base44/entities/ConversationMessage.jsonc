@@ -1,0 +1,31 @@
+{
+  "name": "ConversationMessage",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI id"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "ConversationSession id"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "ai"
+      ],
+      "description": "Speaker role"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message content"
+    }
+  },
+  "required": [
+    "ai_id",
+    "role",
+    "content"
+  ]
+}

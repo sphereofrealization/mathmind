@@ -1,0 +1,30 @@
+{
+  "name": "AgentTransfer",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "from_email": {
+      "type": "string"
+    },
+    "to_email": {
+      "type": "string"
+    },
+    "listing_id": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "asset_id",
+    "agent_id",
+    "from_email",
+    "to_email"
+  ]
+}

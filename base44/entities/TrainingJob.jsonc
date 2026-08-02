@@ -1,0 +1,68 @@
+{
+  "name": "TrainingJob",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "ID of the TrainedAI this job is for"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "indexing",
+        "analyzing",
+        "completed",
+        "error"
+      ],
+      "default": "queued",
+      "description": "Current training/indexing status"
+    },
+    "progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Progress percentage"
+    },
+    "chunk_count": {
+      "type": "number",
+      "description": "Number of chunks generated"
+    },
+    "token_count_estimate": {
+      "type": "number",
+      "description": "Estimated token count of indexed content"
+    },
+    "last_error": {
+      "type": "string",
+      "description": "Last error message if any"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional info about processing"
+    },
+    "eta_seconds": {
+      "type": "number",
+      "description": "Estimated time remaining in seconds for the current phase"
+    },
+    "throughput_cpm": {
+      "type": "number",
+      "description": "Current throughput in cycles per minute (chunks/min during indexing; batches/min during analysis)"
+    },
+    "remaining_chunks": {
+      "type": "number",
+      "description": "Remaining chunks to index (indexing phase only)"
+    },
+    "analysis_batches_done": {
+      "type": "number",
+      "description": "Completed analysis batches (analysis phase only)"
+    },
+    "analysis_batches_total": {
+      "type": "number",
+      "description": "Total analysis batches planned (analysis phase only)"
+    }
+  },
+  "required": [
+    "ai_id"
+  ]
+}

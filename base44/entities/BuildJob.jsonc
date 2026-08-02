@@ -1,0 +1,49 @@
+{
+  "name": "BuildJob",
+  "type": "object",
+  "properties": {
+    "room_id": {
+      "type": "string",
+      "description": "CollabRoom id"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "CollabTask id"
+    },
+    "agent_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Agents participating"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "error"
+      ],
+      "default": "queued"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes or summary"
+    }
+  },
+  "required": [
+    "room_id",
+    "task_id",
+    "agent_ids",
+    "status"
+  ]
+}

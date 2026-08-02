@@ -1,0 +1,96 @@
+{
+  "name": "MathBook",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the mathematics book"
+    },
+    "author": {
+      "type": "string",
+      "description": "Author(s) of the book"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "algebra",
+        "calculus",
+        "geometry",
+        "topology",
+        "analysis",
+        "number_theory",
+        "statistics",
+        "probability",
+        "discrete_math",
+        "linear_algebra",
+        "differential_equations",
+        "abstract_algebra",
+        "mathematical_logic",
+        "other"
+      ],
+      "description": "Mathematical subject category"
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "More specific topic within the category"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL of the uploaded PDF file"
+    },
+    "extracted_content": {
+      "type": "string",
+      "description": "Extracted text content from the book"
+    },
+    "processed_content": {
+      "type": "string",
+      "description": "Cleaned and processed content ready for AI training"
+    },
+    "processing_status": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "extracting",
+        "processing",
+        "completed",
+        "error"
+      ],
+      "default": "uploaded",
+      "description": "Current processing status"
+    },
+    "page_count": {
+      "type": "number",
+      "description": "Number of pages in the book"
+    },
+    "word_count": {
+      "type": "number",
+      "description": "Approximate word count of extracted content"
+    },
+    "publisher": {
+      "type": "string",
+      "description": "Book publisher"
+    },
+    "year": {
+      "type": "number",
+      "description": "Publication year"
+    },
+    "isbn": {
+      "type": "string",
+      "description": "ISBN number"
+    },
+    "difficulty_level": {
+      "type": "string",
+      "enum": [
+        "undergraduate",
+        "graduate",
+        "research",
+        "reference"
+      ],
+      "description": "Academic difficulty level"
+    }
+  },
+  "required": [
+    "title",
+    "category"
+  ]
+}

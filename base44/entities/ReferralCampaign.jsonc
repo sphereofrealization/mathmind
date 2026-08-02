@@ -1,0 +1,37 @@
+{
+  "name": "ReferralCampaign",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Public referral code used in invite links"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Campaign owner (referrer)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short campaign description"
+    },
+    "reward_on_signup": {
+      "type": "number",
+      "default": 50,
+      "description": "Fruitles reward to referrer on signup"
+    },
+    "reward_on_purchase": {
+      "type": "number",
+      "default": 20,
+      "description": "Fruitles reward to referrer on each purchase by referred user"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this campaign is active"
+    }
+  },
+  "required": [
+    "code",
+    "owner_email"
+  ]
+}

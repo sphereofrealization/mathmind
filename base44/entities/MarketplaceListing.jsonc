@@ -1,0 +1,52 @@
+{
+  "name": "MarketplaceListing",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "description": "AIAsset id being listed"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "Convenience reference to TrainedAI id"
+    },
+    "seller_email": {
+      "type": "string",
+      "description": "Seller email (must match asset owner)"
+    },
+    "price": {
+      "type": "number",
+      "description": "Listing price"
+    },
+    "currency": {
+      "type": "string",
+      "default": "fruitles",
+      "description": "Display currency label for in-app trades"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "sold",
+        "cancelled"
+      ],
+      "default": "active",
+      "description": "Listing status"
+    },
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer email once sold"
+    },
+    "note": {
+      "type": "string",
+      "description": "Optional note"
+    }
+  },
+  "required": [
+    "asset_id",
+    "ai_id",
+    "seller_email",
+    "price",
+    "status"
+  ]
+}

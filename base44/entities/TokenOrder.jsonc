@@ -1,0 +1,46 @@
+{
+  "name": "TokenOrder",
+  "type": "object",
+  "properties": {
+    "token_id": {
+      "type": "string",
+      "description": "SiteToken id"
+    },
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer email"
+    },
+    "address": {
+      "type": "string",
+      "description": "Assigned BTC address"
+    },
+    "expected_amount_sats": {
+      "type": "number",
+      "description": "Amount expected in sats"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_review",
+        "paid",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Payment status"
+    },
+    "txid": {
+      "type": "string",
+      "description": "Transaction id (set when paid)"
+    },
+    "note": {
+      "type": "string",
+      "description": "Internal note"
+    }
+  },
+  "required": [
+    "token_id",
+    "expected_amount_sats",
+    "status"
+  ]
+}

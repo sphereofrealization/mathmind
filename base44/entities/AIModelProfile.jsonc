@@ -1,0 +1,83 @@
+{
+  "name": "AIModelProfile",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI id this profile belongs to"
+    },
+    "name": {
+      "type": "string",
+      "description": "Profile name (e.g., 'Analytical Limbertwig')"
+    },
+    "articulation": {
+      "type": "string",
+      "enum": [
+        "concise",
+        "analytical",
+        "teaching",
+        "creative"
+      ],
+      "default": "analytical",
+      "description": "High-level articulation mode"
+    },
+    "personality_strength": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "default": 0.7,
+      "description": "How strongly to apply the style (0-1)"
+    },
+    "style_guide": {
+      "type": "string",
+      "description": "Stable style/voice instructions distilled from documents"
+    },
+    "seed_examples": {
+      "type": "array",
+      "description": "Few-shot conversation seeds",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "ai": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "ai"
+        ]
+      }
+    },
+    "target_model_hint": {
+      "type": "string",
+      "description": "Desired base model hint (display only)"
+    },
+    "temperature": {
+      "type": "number",
+      "description": "Target temperature (display only)",
+      "default": 0.7
+    },
+    "max_tokens": {
+      "type": "number",
+      "description": "Target max tokens (display only)",
+      "default": 800
+    },
+    "use_chunks": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use indexed knowledge chunks in answers"
+    },
+    "use_learnings": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use stored learnings in answers"
+    }
+  },
+  "required": [
+    "ai_id",
+    "name"
+  ]
+}

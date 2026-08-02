@@ -1,0 +1,66 @@
+{
+  "name": "ChainConfig",
+  "type": "object",
+  "properties": {
+    "chain": {
+      "type": "string",
+      "enum": [
+        "solana"
+      ],
+      "default": "solana",
+      "description": "Target blockchain"
+    },
+    "network": {
+      "type": "string",
+      "enum": [
+        "devnet",
+        "mainnet"
+      ],
+      "default": "devnet",
+      "description": "Solana cluster"
+    },
+    "mint_address": {
+      "type": "string",
+      "description": "SPL token mint address for Fruitles"
+    },
+    "decimals": {
+      "type": "number",
+      "default": 6,
+      "description": "SPL token decimals"
+    },
+    "custody_address": {
+      "type": "string",
+      "description": "SPL token account to receive deposits"
+    },
+    "fee_bps": {
+      "type": "number",
+      "default": 0,
+      "description": "Withdrawal fee in basis points (100 bps = 1%)"
+    },
+    "min_withdraw": {
+      "type": "number",
+      "default": 1,
+      "description": "Minimum withdrawal amount (fruitles units)"
+    },
+    "max_withdraw": {
+      "type": "number",
+      "default": 0,
+      "description": "Maximum withdrawal amount (0 = no max)"
+    },
+    "withdraw_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable withdrawals to Solana"
+    },
+    "deposit_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable deposits from Solana"
+    },
+    "explorer_base_url": {
+      "type": "string",
+      "description": "Optional explorer base URL (e.g., https://explorer.solana.com/tx/)"
+    }
+  },
+  "required": []
+}

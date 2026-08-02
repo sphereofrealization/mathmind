@@ -1,0 +1,46 @@
+{
+  "name": "CollabRoom",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Room name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Room purpose"
+    },
+    "domain_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags/domains (for AI ELO)"
+    },
+    "agent_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Member agent ids"
+    },
+    "ai_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Member TrainedAI ids"
+    },
+    "default_domain": {
+      "type": "string",
+      "description": "Default domain for ratings"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

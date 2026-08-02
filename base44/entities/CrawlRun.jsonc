@@ -1,0 +1,42 @@
+{
+  "name": "CrawlRun",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Run start time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Run end time"
+    },
+    "pages_fetched": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of pages successfully fetched"
+    },
+    "pages_errored": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of pages that errored"
+    },
+    "budget": {
+      "type": "number",
+      "default": 300,
+      "description": "Max pages budget for this run"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes/log summary"
+    }
+  },
+  "required": [
+    "agent_id"
+  ]
+}

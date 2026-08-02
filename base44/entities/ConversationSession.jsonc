@@ -1,0 +1,32 @@
+{
+  "name": "ConversationSession",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI id for this session"
+    },
+    "title": {
+      "type": "string",
+      "description": "Session title for display"
+    },
+    "learning_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Auto-extract learnings from turns"
+    },
+    "use_learnings_in_context": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use stored learnings when answering"
+    },
+    "ended": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the session is ended"
+    }
+  },
+  "required": [
+    "ai_id"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "AITransfer",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string",
+      "description": "AIAsset id"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI id"
+    },
+    "from_email": {
+      "type": "string",
+      "description": "Sender email"
+    },
+    "to_email": {
+      "type": "string",
+      "description": "Recipient email"
+    },
+    "listing_id": {
+      "type": "string",
+      "description": "MarketplaceListing id if via sale"
+    },
+    "note": {
+      "type": "string",
+      "description": "Optional transfer note"
+    }
+  },
+  "required": [
+    "asset_id",
+    "ai_id",
+    "from_email",
+    "to_email"
+  ]
+}

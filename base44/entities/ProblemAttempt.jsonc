@@ -1,0 +1,73 @@
+{
+  "name": "ProblemAttempt",
+  "type": "object",
+  "properties": {
+    "problem_id": {
+      "type": "string",
+      "description": "Related Problem id"
+    },
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI used (if any)"
+    },
+    "approach": {
+      "type": "string",
+      "description": "Reasoning/approach taken"
+    },
+    "solution": {
+      "type": "string",
+      "description": "Proposed solution/answer"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "solved",
+        "partial",
+        "failed"
+      ],
+      "default": "partial",
+      "description": "Outcome of the attempt"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Self-assessed confidence"
+    },
+    "time_ms": {
+      "type": "number",
+      "description": "Compute time in ms (approx)"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if failed"
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs or citations used"
+    },
+    "created_via": {
+      "type": "string",
+      "enum": [
+        "llm",
+        "user",
+        "hybrid"
+      ],
+      "default": "llm"
+    },
+    "spawned_problem_id": {
+      "type": "string",
+      "description": "If this attempt generated a harder follow-up problem, its id"
+    }
+  },
+  "required": [
+    "problem_id"
+  ]
+}

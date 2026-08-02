@@ -1,0 +1,387 @@
+{
+  "name": "TrainedAI",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the trained AI"
+    },
+    "source_books": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "IDs of source MathBooks used for training"
+    },
+    "training_status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "preprocessing",
+        "pattern_analysis",
+        "numerical_mapping",
+        "logic_integration",
+        "training",
+        "completed",
+        "error"
+      ],
+      "default": "queued",
+      "description": "Current training status"
+    },
+    "training_progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0,
+      "description": "Training progress percentage"
+    },
+    "specialization": {
+      "type": "string",
+      "enum": [
+        "numerical_patterns",
+        "logic_systems",
+        "cross_pattern_analysis",
+        "general_mathematics"
+      ],
+      "default": "general_mathematics",
+      "description": "AI specialization focus"
+    },
+    "pattern_insights": {
+      "type": "string",
+      "description": "Discovered patterns during training"
+    },
+    "numerical_coefficients": {
+      "type": "string",
+      "description": "Key numerical coefficient patterns found"
+    },
+    "logic_mappings": {
+      "type": "string",
+      "description": "Logic system mappings discovered"
+    },
+    "training_data_size": {
+      "type": "number",
+      "description": "Size of training data in tokens"
+    },
+    "model_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Training confidence score"
+    },
+    "conversation_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of conversations held with this AI"
+    },
+    "use_math_pipeline": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable math-augmented training (LaTeX/symbol extraction and numeric weighting)"
+    },
+    "math_pipeline_options": {
+      "type": "object",
+      "description": "Fine-grained controls for the math-augmented pipeline",
+      "properties": {
+        "extract_symbols": {
+          "type": "boolean",
+          "default": true
+        },
+        "extract_latex": {
+          "type": "boolean",
+          "default": true
+        },
+        "weight_numbers": {
+          "type": "boolean",
+          "default": true
+        },
+        "segment_equations": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "response_style": {
+      "type": "string",
+      "description": "Optional style/voice instructions, e.g., 'Respond in Limbertwig meta-language with explicit coefficient syntax'"
+    },
+    "deep_learning": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable deep learning multi-pass analysis (slower, more thorough)"
+    },
+    "deep_options": {
+      "type": "object",
+      "description": "Controls for deep learning analysis",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "deep",
+            "exhaustive"
+          ],
+          "default": "standard"
+        },
+        "llm_chunk_analysis": {
+          "type": "boolean",
+          "default": true
+        },
+        "passes": {
+          "type": "number",
+          "default": 2
+        }
+      }
+    },
+    "neural_architecture": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable neural-architecture-aware feature extraction (daisy trees, phase-state, exotic loops, curvature, energy numbers, etc.)"
+    },
+    "neural_architecture_options": {
+      "type": "object",
+      "description": "Options for neural architecture extraction",
+      "properties": {
+        "preset": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "daisy_phase_exotic_curvature",
+            "energy_numbers_operadic"
+          ],
+          "default": "auto",
+          "description": "Extraction bias preset"
+        },
+        "extra_tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Custom tags/terms to bias extraction"
+        }
+      }
+    },
+    "finetune": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether to prepare a model fine-tuning job (UI-level only)"
+    },
+    "finetune_options": {
+      "type": "object",
+      "description": "Exhaustive fine-tuning configuration (for a future backend job)",
+      "properties": {
+        "base_model": {
+          "type": "string",
+          "enum": [
+            "llama-3-8b",
+            "llama-3-70b",
+            "mistral-7b",
+            "mixtral-8x7b",
+            "phi-3-medium",
+            "qwen2-7b",
+            "custom_hint"
+          ],
+          "default": "llama-3-8b",
+          "description": "Target base model family (hint)"
+        },
+        "custom_base_model_hint": {
+          "type": "string",
+          "description": "If base_model=custom_hint, specify model id/name"
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "instruction_tuning",
+            "chat",
+            "qa",
+            "math_reasoning",
+            "domain_style"
+          ],
+          "default": "instruction_tuning"
+        },
+        "use_peft": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use parameter-efficient fine-tuning"
+        },
+        "peft_method": {
+          "type": "string",
+          "enum": [
+            "lora",
+            "qlora",
+            "prefix",
+            "adapters"
+          ],
+          "default": "lora"
+        },
+        "lora_r": {
+          "type": "number",
+          "default": 16
+        },
+        "lora_alpha": {
+          "type": "number",
+          "default": 32
+        },
+        "lora_dropout": {
+          "type": "number",
+          "default": 0.05
+        },
+        "lora_bias": {
+          "type": "string",
+          "enum": [
+            "none",
+            "lora_only",
+            "all"
+          ],
+          "default": "none"
+        },
+        "qlora_4bit": {
+          "type": "boolean",
+          "default": false
+        },
+        "qlora_double_quant": {
+          "type": "boolean",
+          "default": true
+        },
+        "epochs": {
+          "type": "number",
+          "default": 3
+        },
+        "batch_size": {
+          "type": "number",
+          "default": 8
+        },
+        "grad_accum_steps": {
+          "type": "number",
+          "default": 2
+        },
+        "learning_rate": {
+          "type": "number",
+          "default": 2e-05
+        },
+        "weight_decay": {
+          "type": "number",
+          "default": 0.01
+        },
+        "warmup_steps": {
+          "type": "number",
+          "default": 100
+        },
+        "scheduler": {
+          "type": "string",
+          "enum": [
+            "cosine",
+            "linear",
+            "constant"
+          ],
+          "default": "cosine"
+        },
+        "max_seq_len": {
+          "type": "number",
+          "default": 2048
+        },
+        "eval_steps": {
+          "type": "number",
+          "default": 200
+        },
+        "save_steps": {
+          "type": "number",
+          "default": 500
+        },
+        "early_stopping_patience": {
+          "type": "number",
+          "default": 3
+        },
+        "seed": {
+          "type": "number",
+          "default": 42
+        },
+        "dataset": {
+          "type": "object",
+          "properties": {
+            "include_chunks_top_k": {
+              "type": "number",
+              "default": 8,
+              "description": "Top-k ranked chunks per query to include"
+            },
+            "include_learnings": {
+              "type": "boolean",
+              "default": true
+            },
+            "learnings_max": {
+              "type": "number",
+              "default": 50
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "all",
+                "smart_sample",
+                "high_math_density"
+              ],
+              "default": "smart_sample"
+            },
+            "dedupe": {
+              "type": "boolean",
+              "default": true
+            },
+            "augment_paraphrase": {
+              "type": "boolean",
+              "default": false
+            },
+            "augment_math_canonical": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "tokenizer": {
+          "type": "object",
+          "properties": {
+            "add_eos": {
+              "type": "boolean",
+              "default": true
+            },
+            "pad_to_max": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "safety": {
+          "type": "object",
+          "properties": {
+            "remove_pii": {
+              "type": "boolean",
+              "default": true
+            },
+            "profanity_filter": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "push_to_registry": {
+              "type": "boolean",
+              "default": false
+            },
+            "registry_name": {
+              "type": "string",
+              "description": "Optional model registry name"
+            }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional training notes"
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "source_books"
+  ]
+}

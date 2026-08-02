@@ -1,0 +1,39 @@
+{
+  "name": "FruitlesTransaction",
+  "type": "object",
+  "properties": {
+    "from_email": {
+      "type": "string",
+      "description": "Sender email (use system@fruitles for grants)"
+    },
+    "to_email": {
+      "type": "string",
+      "description": "Recipient email"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount of fruitles transferred (positive)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Human-readable reason e.g., starter_bonus, marketplace_purchase"
+    },
+    "listing_id": {
+      "type": "string",
+      "description": "Related MarketplaceListing id (if any)"
+    },
+    "asset_id": {
+      "type": "string",
+      "description": "Related AIAsset id (if any)"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "Related TrainedAI id (if any)"
+    }
+  },
+  "required": [
+    "from_email",
+    "to_email",
+    "amount"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "name": "SiteAgentLog",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "tick",
+        "plan",
+        "action",
+        "result",
+        "error"
+      ],
+      "description": "Log entry type"
+    },
+    "message": {
+      "type": "string",
+      "description": "Raw message or JSON payload as string"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short summary for UI"
+    },
+    "success": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the action completed successfully"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if any"
+    },
+    "run_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional explicit timestamp (created_date exists by default)"
+    }
+  },
+  "required": [
+    "agent_id",
+    "type"
+  ]
+}

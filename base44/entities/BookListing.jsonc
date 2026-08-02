@@ -1,0 +1,44 @@
+{
+  "name": "BookListing",
+  "type": "object",
+  "properties": {
+    "asset_id": {
+      "type": "string"
+    },
+    "book_id": {
+      "type": "string"
+    },
+    "seller_email": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "fruitles"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "sold",
+        "cancelled"
+      ],
+      "default": "active"
+    },
+    "buyer_email": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "asset_id",
+    "book_id",
+    "seller_email",
+    "price",
+    "status"
+  ]
+}

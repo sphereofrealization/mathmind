@@ -1,0 +1,37 @@
+{
+  "name": "SiteToken",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Token/product name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Details"
+    },
+    "price_sats": {
+      "type": "number",
+      "description": "Price in satoshis"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is this token available for sale?"
+    },
+    "max_supply": {
+      "type": "number",
+      "default": 0,
+      "description": "0 = unlimited"
+    },
+    "sold": {
+      "type": "number",
+      "default": 0,
+      "description": "Units sold (manual/derived)"
+    }
+  },
+  "required": [
+    "name",
+    "price_sats"
+  ]
+}

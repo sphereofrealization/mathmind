@@ -1,0 +1,55 @@
+{
+  "name": "AILearning",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "TrainedAI id"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Source ConversationSession id"
+    },
+    "source_message_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Related ConversationMessage ids"
+    },
+    "text": {
+      "type": "string",
+      "description": "Compact learned snippet/fact/pattern"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Keywords for retrieval"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "ready",
+        "committed"
+      ],
+      "default": "ready",
+      "description": "Learning lifecycle status"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "public"
+      ],
+      "default": "private",
+      "description": "Visibility scope"
+    }
+  },
+  "required": [
+    "ai_id",
+    "text"
+  ]
+}

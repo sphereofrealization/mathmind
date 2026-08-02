@@ -1,0 +1,51 @@
+{
+  "name": "AIAsset",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "ID of the TrainedAI this asset represents"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the AI asset"
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Short token-like symbol (e.g., LMB)"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Current owner (email)"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description"
+    },
+    "transferable": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, transfers are disabled"
+    },
+    "total_supply": {
+      "type": "number",
+      "default": 1,
+      "description": "Total number of tokens (fixed at 1 for now)"
+    },
+    "royalty_bps": {
+      "type": "number",
+      "default": 0,
+      "description": "Optional royalty in basis points on secondary sales (display only)"
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "Mechanical artifact icon URL"
+    }
+  },
+  "required": [
+    "ai_id",
+    "name",
+    "symbol",
+    "owner_email"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "ModelArtifact",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "Associated TrainedAI id"
+    },
+    "job_id": {
+      "type": "string",
+      "description": "Producing FineTuneJob id"
+    },
+    "name": {
+      "type": "string",
+      "description": "Artifact name, e.g., 'LoRA adapter v1'"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "checkpoint",
+        "adapter",
+        "tokenizer",
+        "config"
+      ],
+      "description": "Kind of artifact"
+    },
+    "format": {
+      "type": "string",
+      "enum": [
+        "safetensors",
+        "gguf",
+        "json",
+        "other"
+      ],
+      "description": "File format"
+    },
+    "uri": {
+      "type": "string",
+      "description": "Storage URI or URL"
+    },
+    "checksum": {
+      "type": "string",
+      "description": "Checksum (e.g., sha256)"
+    },
+    "size_bytes": {
+      "type": "number",
+      "description": "Size in bytes"
+    },
+    "license": {
+      "type": "string",
+      "description": "License string"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes"
+    },
+    "minted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether tokenized on-chain"
+    },
+    "chain": {
+      "type": "string",
+      "description": "Chain name (display only)"
+    },
+    "contract_address": {
+      "type": "string",
+      "description": "Token contract address (display only)"
+    },
+    "token_id": {
+      "type": "string",
+      "description": "On-chain token id (display only)"
+    },
+    "tx_hash": {
+      "type": "string",
+      "description": "Mint transaction hash (display only)"
+    }
+  },
+  "required": [
+    "ai_id",
+    "name",
+    "type",
+    "format",
+    "uri"
+  ]
+}

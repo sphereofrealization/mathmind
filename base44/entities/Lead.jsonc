@@ -1,0 +1,54 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Lead email address"
+    },
+    "name": {
+      "type": "string",
+      "description": "Lead full name (optional)"
+    },
+    "source": {
+      "type": "string",
+      "description": "Source of the lead (csv_import, manual, event, etc.)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional tags for cohorting"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "invited",
+        "signed_up",
+        "purchased",
+        "opted_out"
+      ],
+      "default": "new",
+      "description": "Lifecycle status"
+    },
+    "last_invited_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last invite sent"
+    },
+    "consent": {
+      "type": "boolean",
+      "default": true,
+      "description": "Email contact consent flag"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes/context"
+    }
+  },
+  "required": [
+    "email"
+  ]
+}

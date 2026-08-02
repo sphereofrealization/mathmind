@@ -1,0 +1,48 @@
+{
+  "name": "SolanaWithdrawal",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User requesting withdrawal"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Requested amount (fruitles units)"
+    },
+    "fee": {
+      "type": "number",
+      "default": 0,
+      "description": "Fee charged (fruitles units)"
+    },
+    "to_address": {
+      "type": "string",
+      "description": "Destination SPL token account or wallet address"
+    },
+    "txid": {
+      "type": "string",
+      "description": "On-chain transaction signature (once sent)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Withdrawal status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes"
+    }
+  },
+  "required": [
+    "user_email",
+    "amount",
+    "to_address",
+    "status"
+  ]
+}

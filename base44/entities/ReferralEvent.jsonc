@@ -1,0 +1,36 @@
+{
+  "name": "ReferralEvent",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Referral code used"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "click",
+        "signup",
+        "purchase"
+      ],
+      "description": "Type of referral event"
+    },
+    "referrer_email": {
+      "type": "string",
+      "description": "Email of the referrer (campaign owner)"
+    },
+    "referred_email": {
+      "type": "string",
+      "description": "Email of the referred user (if known)"
+    },
+    "metadata": {
+      "type": "string",
+      "description": "Optional extra context (e.g., listing id, notes)"
+    }
+  },
+  "required": [
+    "code",
+    "event_type",
+    "referrer_email"
+  ]
+}

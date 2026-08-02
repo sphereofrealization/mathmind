@@ -1,0 +1,48 @@
+{
+  "name": "AgentBudget",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "cap_period": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "weekly",
+        "daily"
+      ],
+      "default": "monthly",
+      "description": "Budget period"
+    },
+    "cap_amount": {
+      "type": "number",
+      "description": "Max spend per period"
+    },
+    "auto_approve_threshold": {
+      "type": "number",
+      "description": "Auto-approve amount threshold"
+    },
+    "spent_current_period": {
+      "type": "number",
+      "default": 0,
+      "description": "Spent so far this period"
+    },
+    "period_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Current period start"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes"
+    }
+  },
+  "required": [
+    "agent_id",
+    "cap_period",
+    "cap_amount",
+    "auto_approve_threshold"
+  ]
+}

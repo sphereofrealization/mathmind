@@ -1,0 +1,49 @@
+{
+  "name": "AgentAsset",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the agent asset"
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Short token-like symbol"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Current owner email"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description"
+    },
+    "transferable": {
+      "type": "boolean",
+      "default": true,
+      "description": "If false, transfers disabled"
+    },
+    "total_supply": {
+      "type": "number",
+      "default": 1
+    },
+    "royalty_bps": {
+      "type": "number",
+      "default": 0
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "Weapon-style icon URL"
+    }
+  },
+  "required": [
+    "agent_id",
+    "name",
+    "symbol",
+    "owner_email"
+  ]
+}

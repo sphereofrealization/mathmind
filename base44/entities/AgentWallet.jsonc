@@ -1,0 +1,37 @@
+{
+  "name": "AgentWallet",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Owner email (denormalized for convenience)"
+    },
+    "balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Unharvested balance"
+    },
+    "total_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Lifetime earnings"
+    },
+    "total_harvested": {
+      "type": "number",
+      "default": 0,
+      "description": "Lifetime harvested amount"
+    },
+    "last_harvest_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last harvest timestamp"
+    }
+  },
+  "required": [
+    "agent_id"
+  ]
+}

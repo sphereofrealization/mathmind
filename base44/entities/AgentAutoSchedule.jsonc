@@ -1,0 +1,30 @@
+{
+  "name": "AgentAutoSchedule",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "time_utc": {
+      "type": "string",
+      "description": "HH:MM (24h) UTC time to run daily"
+    },
+    "last_run_date": {
+      "type": "string",
+      "format": "date",
+      "description": "UTC date of last run (YYYY-MM-DD)"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "time_utc"
+  ]
+}

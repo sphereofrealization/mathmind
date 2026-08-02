@@ -1,0 +1,55 @@
+{
+  "name": "SolanaDeposit",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User to credit"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount of SPL tokens received (fruitles units)"
+    },
+    "token_decimals": {
+      "type": "number",
+      "default": 6,
+      "description": "Token decimals used"
+    },
+    "from_address": {
+      "type": "string",
+      "description": "Sender SPL token account"
+    },
+    "to_address": {
+      "type": "string",
+      "description": "Custody SPL token account"
+    },
+    "txid": {
+      "type": "string",
+      "description": "On-chain transaction signature"
+    },
+    "slot": {
+      "type": "number",
+      "description": "Observed slot (optional)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "confirmed",
+        "credited",
+        "rejected"
+      ],
+      "default": "submitted",
+      "description": "Lifecycle status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes"
+    }
+  },
+  "required": [
+    "user_email",
+    "amount",
+    "status"
+  ]
+}

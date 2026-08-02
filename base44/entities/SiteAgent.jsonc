@@ -1,0 +1,70 @@
+{
+  "name": "SiteAgent",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Agent display name"
+    },
+    "objective": {
+      "type": "string",
+      "description": "Primary objective for this agent"
+    },
+    "loop_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, the agent runs on a loop while the page is open"
+    },
+    "loop_interval_seconds": {
+      "type": "number",
+      "default": 300,
+      "description": "Loop interval in seconds (min ~30)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "running",
+        "error"
+      ],
+      "default": "idle"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last tick time"
+    },
+    "research_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Allow web research via internet context"
+    },
+    "dev_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate development ideas/tasks"
+    },
+    "refine_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Generate refinement/UX/performance suggestions"
+    },
+    "plan": {
+      "type": "string",
+      "description": "Latest high-level plan (optional)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    },
+    "ticks_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of completed ticks"
+    }
+  },
+  "required": [
+    "name",
+    "objective"
+  ]
+}

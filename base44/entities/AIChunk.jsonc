@@ -1,0 +1,69 @@
+{
+  "name": "AIChunk",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "ID of the TrainedAI this chunk belongs to"
+    },
+    "book_id": {
+      "type": "string",
+      "description": "ID of the source MathBook"
+    },
+    "chunk_index": {
+      "type": "number",
+      "description": "Index of the chunk in the source"
+    },
+    "content": {
+      "type": "string",
+      "description": "Text content of the chunk"
+    },
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Extracted keywords for fast matching"
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Numeric tokens found in this chunk (as strings)"
+    },
+    "latex_macros": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "LaTeX macro commands found (e.g., \\alpha, \\begin, \\otimes)"
+    },
+    "latex_envs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "LaTeX environment names found (e.g., theorem, lemma, proof)"
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Mathematical symbols detected (e.g., \u2211, \u222b, \u21d2, \u2297, \u03b1, \u03b2)"
+    },
+    "architecture_tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags detected for neural-architecture constructs (e.g., daisy tree, phase-state, exotic loops, curvature, operad, sheaf)"
+    }
+  },
+  "required": [
+    "ai_id",
+    "content",
+    "chunk_index"
+  ]
+}

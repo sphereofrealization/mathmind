@@ -1,0 +1,46 @@
+{
+  "name": "BookAsset",
+  "type": "object",
+  "properties": {
+    "book_id": {
+      "type": "string",
+      "description": "Related MathBook id"
+    },
+    "name": {
+      "type": "string",
+      "description": "Book title"
+    },
+    "symbol": {
+      "type": "string",
+      "description": "Short token symbol"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "transferable": {
+      "type": "boolean",
+      "default": true
+    },
+    "total_supply": {
+      "type": "number",
+      "default": 1
+    },
+    "royalty_bps": {
+      "type": "number",
+      "default": 0
+    },
+    "icon_url": {
+      "type": "string",
+      "description": "Arcane book icon URL"
+    }
+  },
+  "required": [
+    "book_id",
+    "name",
+    "symbol",
+    "owner_email"
+  ]
+}

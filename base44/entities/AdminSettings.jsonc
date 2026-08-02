@@ -1,0 +1,22 @@
+{
+  "name": "AdminSettings",
+  "type": "object",
+  "properties": {
+    "allowed_admin_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails allowed to access Site Management"
+    },
+    "watch_only_xpub": {
+      "type": "string",
+      "description": "Optional Bitcoin watch-only XPUB (do NOT store seed)"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": []
+}

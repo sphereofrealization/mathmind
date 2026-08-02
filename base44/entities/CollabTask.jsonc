@@ -1,0 +1,70 @@
+{
+  "name": "CollabTask",
+  "type": "object",
+  "properties": {
+    "room_id": {
+      "type": "string",
+      "description": "CollabRoom id"
+    },
+    "title": {
+      "type": "string",
+      "description": "Task title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Task details"
+    },
+    "column": {
+      "type": "string",
+      "enum": [
+        "ideas",
+        "research",
+        "build",
+        "deploy"
+      ],
+      "default": "ideas",
+      "description": "Kanban column"
+    },
+    "ai_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Related AIs"
+    },
+    "agent_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Related agents"
+    },
+    "problem_id": {
+      "type": "string",
+      "description": "Linked Problem id (optional)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "done"
+      ],
+      "default": "open"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    }
+  },
+  "required": [
+    "room_id",
+    "title",
+    "column"
+  ]
+}

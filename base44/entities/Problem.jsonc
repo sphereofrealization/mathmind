@@ -1,0 +1,84 @@
+{
+  "name": "Problem",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short problem title"
+    },
+    "statement": {
+      "type": "string",
+      "description": "Full problem statement"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "introductory",
+        "intermediate",
+        "advanced",
+        "research"
+      ],
+      "default": "intermediate",
+      "description": "Difficulty level"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Math domain/topic (e.g., algebra, topology)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "solved",
+        "failed"
+      ],
+      "default": "open",
+      "description": "Lifecycle status"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "generated",
+        "web",
+        "user",
+        "derived"
+      ],
+      "default": "generated",
+      "description": "Origin of the problem"
+    },
+    "parent_problem_id": {
+      "type": "string",
+      "description": "If derived, parent problem id"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "Associated TrainedAI id (if any)"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Reference URLs or citations"
+    },
+    "latest_attempt_id": {
+      "type": "string",
+      "description": "Most recent ProblemAttempt id"
+    }
+  },
+  "required": [
+    "agent_id",
+    "statement"
+  ]
+}

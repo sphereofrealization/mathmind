@@ -1,0 +1,26 @@
+{
+  "name": "DepositAddress",
+  "type": "object",
+  "properties": {
+    "address": {
+      "type": "string",
+      "description": "Bitcoin address (receive)"
+    },
+    "label": {
+      "type": "string",
+      "description": "Optional label or derivation path"
+    },
+    "used": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has this address been assigned?"
+    },
+    "assigned_order_id": {
+      "type": "string",
+      "description": "Order id if assigned"
+    }
+  },
+  "required": [
+    "address"
+  ]
+}

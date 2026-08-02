@@ -1,0 +1,54 @@
+{
+  "name": "BudgetApprovalRequest",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string",
+      "description": "Related SiteAgent id"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Requested amount"
+    },
+    "action_type": {
+      "type": "string",
+      "description": "Action summary, e.g., 'google_sheets_write'"
+    },
+    "connector": {
+      "type": "string",
+      "description": "Connector name (e.g., googledrive, slack)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason/context"
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "decided_by": {
+      "type": "string",
+      "description": "Approver email"
+    }
+  },
+  "required": [
+    "agent_id",
+    "amount",
+    "action_type",
+    "connector",
+    "status"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "AIEloScore",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "Related TrainedAI id"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain tag for rating context (e.g., algebra, data_ingestion)"
+    },
+    "rating": {
+      "type": "number",
+      "default": 1500,
+      "description": "ELO rating"
+    },
+    "k_factor": {
+      "type": "number",
+      "default": 32,
+      "description": "ELO K factor"
+    },
+    "games": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of rating updates"
+    },
+    "last_delta": {
+      "type": "number",
+      "description": "Last rating change"
+    },
+    "last_update": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update time"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes"
+    }
+  },
+  "required": [
+    "ai_id",
+    "domain"
+  ]
+}

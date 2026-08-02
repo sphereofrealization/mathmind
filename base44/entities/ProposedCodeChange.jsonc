@@ -1,0 +1,64 @@
+{
+  "name": "ProposedCodeChange",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "file_path": {
+      "type": "string"
+    },
+    "change_type": {
+      "type": "string",
+      "enum": [
+        "create",
+        "modify",
+        "delete"
+      ],
+      "default": "modify"
+    },
+    "find": {
+      "type": "string"
+    },
+    "replace": {
+      "type": "string"
+    },
+    "replace_all": {
+      "type": "boolean",
+      "default": false
+    },
+    "content": {
+      "type": "string",
+      "description": "For create: full new file content"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "applied",
+        "rejected",
+        "failed"
+      ],
+      "default": "proposed"
+    },
+    "applied_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "error_message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "agent_id",
+    "file_path",
+    "change_type",
+    "status"
+  ]
+}

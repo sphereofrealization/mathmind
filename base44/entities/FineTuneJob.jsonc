@@ -1,0 +1,157 @@
+{
+  "name": "FineTuneJob",
+  "type": "object",
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "Target TrainedAI id"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "queued",
+        "running",
+        "completed",
+        "failed"
+      ],
+      "default": "draft",
+      "description": "Lifecycle state"
+    },
+    "provider": {
+      "type": "string",
+      "description": "External fine-tune provider hint (display only)"
+    },
+    "base_model": {
+      "type": "string",
+      "enum": [
+        "llama-3-8b-instruct",
+        "llama-3-70b-instruct",
+        "mistral-7b-instruct",
+        "mixtral-8x7b-instruct",
+        "qwen2-7b-instruct",
+        "custom"
+      ],
+      "default": "llama-3-8b-instruct"
+    },
+    "custom_base_model_hint": {
+      "type": "string",
+      "description": "If base_model=custom, set model id/ref"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "lora",
+        "qlora",
+        "full"
+      ],
+      "default": "lora"
+    },
+    "hyperparams": {
+      "type": "object",
+      "properties": {
+        "epochs": {
+          "type": "number",
+          "default": 3
+        },
+        "batch_size": {
+          "type": "number",
+          "default": 8
+        },
+        "grad_accum_steps": {
+          "type": "number",
+          "default": 2
+        },
+        "learning_rate": {
+          "type": "number",
+          "default": 2e-05
+        },
+        "weight_decay": {
+          "type": "number",
+          "default": 0.01
+        },
+        "warmup_steps": {
+          "type": "number",
+          "default": 100
+        },
+        "scheduler": {
+          "type": "string",
+          "enum": [
+            "cosine",
+            "linear",
+            "constant"
+          ],
+          "default": "cosine"
+        },
+        "max_seq_len": {
+          "type": "number",
+          "default": 2048
+        },
+        "seed": {
+          "type": "number",
+          "default": 42
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "properties": {
+        "jsonl_pairs": {
+          "type": "number",
+          "description": "Number of pairs exported"
+        },
+        "token_estimate": {
+          "type": "number",
+          "description": "Estimated training tokens"
+        },
+        "notes": {
+          "type": "string",
+          "description": "How the dataset was assembled"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": [
+            "safetensors",
+            "gguf",
+            "peft_adapter"
+          ],
+          "default": "peft_adapter"
+        },
+        "expected_artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "e.g., adapter.safetensors, config.json"
+        }
+      }
+    },
+    "artifact_uri": {
+      "type": "string",
+      "description": "Where artifacts are stored (e.g., s3://...)"
+    },
+    "logs": {
+      "type": "string",
+      "description": "Optional textual logs"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "ai_id",
+    "status",
+    "base_model",
+    "method"
+  ]
+}

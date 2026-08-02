@@ -1,0 +1,49 @@
+{
+  "name": "AutomationRun",
+  "type": "object",
+  "properties": {
+    "campaign_code": {
+      "type": "string",
+      "description": "Referral campaign code used"
+    },
+    "lead_id": {
+      "type": "string",
+      "description": "Target lead ID"
+    },
+    "lead_email": {
+      "type": "string",
+      "description": "Target lead email"
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "tweet",
+        "post"
+      ],
+      "default": "email",
+      "description": "Channel used"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Outcome, e.g., sent, error"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if any"
+    },
+    "message_subject": {
+      "type": "string",
+      "description": "Subject used for email"
+    },
+    "message_body": {
+      "type": "string",
+      "description": "Body used for message/email"
+    }
+  },
+  "required": [
+    "campaign_code",
+    "lead_email",
+    "channel"
+  ]
+}
